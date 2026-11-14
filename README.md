@@ -6,14 +6,14 @@
 - **Footer:** POWERED BY ZAHID TECH
 - **Support:** myweb615265@gmail.com
 
-This repository runs as one Node.js service on Railway. It serves the website, API routes, admin/key-management UI, MovieBox request engine, and streaming endpoints. Cloudflare is not required.
+This repository runs as one Railway service. Node.js serves the website, API routes, admin/key-management UI and MovieBox request engine. A private localhost Python relay handles upstream media with Chrome-impersonating HTTP/2 and bounded streaming. Cloudflare is not required.
 
 ## Deploy on Railway
 
 Follow [`RAILWAY-DEPLOY.md`](RAILWAY-DEPLOY.md). The production API-key/quota/session database is SQLite stored on a Railway persistent volume mounted at `/app/.data`.
 
 - Start command: `npm start`
-- Runtime: Node.js 24
+- Runtime: Node.js 24 + private Python media relay (Dockerfile)
 - Health check: `/api/v3/health`
 - Railway config: [`railway.toml`](railway.toml)
 
