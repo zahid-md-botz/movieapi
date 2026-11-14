@@ -1,7 +1,8 @@
 import { Readable } from 'node:stream';
 import { MovieBox } from './moviebox.js';
 import { modernRoute,json,secretEqual } from './router.js';
-import { open,fetchMedia } from './tickets.js';
+import { open } from './tickets.js';
+import { fetchMedia } from './media-relay.js';
 import { createOutboundFetch } from './outbound.js';
 
 const outbound=createOutboundFetch();
