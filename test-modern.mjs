@@ -100,3 +100,25 @@ test('HLS segment ranges and downloads preserve actual bytes and format',async()
     assert.match(r.headers.get('access-control-expose-headers'),/Content-Disposition/);
     assert.deepEqual(new Uint8Array(await r.arrayBuffer()),bytes);
 });
+
+test('legacy url download links are proxied safely instead of redirected or rejected',async()=>{
+    const bytes=Uint8Array.from([0,1,2,3]);
+    const env={ADMIN_SECRET:'test-secret',ledger:async()=>({status:200}),media:async(target,headers,range,method)=>{
+        assert.equal(target,'https://bcdn.hakunaymatata.com/legacy.mp4');
+        assert.deepEqual(headers,{});
+        assert.equal(method,'GET');
+        return new Response(bytes,{status:200,headers:{'content-type':'video/mp4','content-length':String(bytes.length)}});
+    }};
+    const url=encodeURIComponent('https://bcdn.hakunaymatata.com/legacy.mp4');
+    const r=await modernRoute(new Request(`https://example.com/api/v3/download?url=${url}&quality=720p`),env);
+    assert.equal(r.status,200);
+    assert.match(r.headers.get('content-disposition'),/^attachment/);
+    assert.match(r.headers.get('content-disposition'),/\.mp4/);
+    assert.deepEqual(new Uint8Array(await r.arrayBuffer()),bytes);
+});
+
+test('legacy media links cannot proxy an unapproved host',async()=>{
+    const env={ADMIN_SECRET:'test-secret',ledger:async()=>({status:200}),media:async()=>{throw new Error('must not fetch');}};
+    const r=await modernRoute(new Request('https://example.com/api/v3/download?url='+encodeURIComponent('https://127.0.0.1/private.mp4')),env);
+    assert.equal(r.status,400);
+});
