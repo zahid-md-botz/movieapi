@@ -14,7 +14,7 @@ export const catalog=[
     route('Titles & episodes','/info/:id','Title metadata, cast, resource and season information.',[id]),
     route('Titles & episodes','/episodes/:id','Available seasons and episode numbers. Missing titles or descriptions are null, never invented.',[id]),
     route('Titles & episodes','/season/:id/:season','One season with the series title.',[id,{name:'season',in:'path',default:'1',required:true}]),
-    route('Streaming','/sources/:id','Short playback/download URLs with no API key in them, available qualities and descriptive filenames. Links expire after six hours. The best MP4 is also available as streamUrl and downloadUrl.',[id,se,ep]),
+    route('Streaming','/sources/:id','Short playback/download URLs with no API key in them, available qualities and descriptive filenames. Links expire after six hours. The best MP4 is also available as streamUrl and downloadUrl; HLS/DASH manifests remain stream-only and are not advertised as direct file downloads.',[id,se,ep]),
     route('Streaming','/captions/:subjectId/:streamId','Subtitle tracks for a source ID.',[{...id,name:'subjectId'},{name:'streamId',in:'path',required:true,default:''},{name:'format',in:'query',default:''}]),
     route('Streaming','/stream/:token','Open the short playback URL returned by /sources. No API key in the URL. Supports Range and HEAD; playback does not consume extra quota.',[{name:'token',in:'path',default:'',required:true}]),
     route('Streaming','/download/:token','Open the download URL from /sources. Uses the title, season/episode, quality and Zahid dev filename without exposing API keys.',[{name:'token',in:'path',default:'',required:true}]),
