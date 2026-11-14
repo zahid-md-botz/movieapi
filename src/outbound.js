@@ -25,5 +25,4 @@ export function createOutboundFetch(proxyUrl=process.env.MOVIEBOX_PROXY_URL) {
     };
     outbound.close=()=>dispatcher.close();
     return outbound;
-    }
-      
+}
