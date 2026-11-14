@@ -302,17 +302,24 @@ async function sourceResponse(data,key,url,env,p) {
         safeMediaUrl(raw);
         const token=randomBytes(18).toString('base64url');
         const links=playbackLinks(url.origin,token);
-        const filename=downloadFilename(data.title,p.season,p.episode,s.quality,mediaFormat({...s,url:raw}));
+        const format=mediaFormat({...s,url:raw});
+        const filename=downloadFilename(data.title,p.season,p.episode,s.quality,format);
+        // HLS/DASH are manifests, not a single downloadable video file. Keep
+        // them available for streaming, but never advertise a manifest as MP4.
+        const downloadable=['mp4','webm','ts'].includes(format);
         entries.push({token,expires,data:{url:raw,headers,title:data.title,filename}});
-        return {...s,url:links.streamUrl,...links,
+        return {...s,format:s.format||format,url:links.streamUrl,streamUrl:links.streamUrl,
+            downloadUrl:downloadable?links.downloadUrl:null,
             filename,expiresAt:new Date(expires).toISOString()};
     });
     if(entries.length) {
         const saved=await env.ledger({action:'playback-save',key,input:{entries}});
         if(saved.status!==200)throw new UpstreamError(saved.message||'Playback storage unavailable',saved.status);
     }
-    const preferred=results.find(s=>mediaFormat(s)==='mp4'&&s.browserCompatible!==false)||results[0];
+    const preferredStream=results.find(s=>mediaFormat(s)==='mp4'&&s.browserCompatible!==false)||results[0];
+    const preferredDownload=results.find(s=>mediaFormat(s)==='mp4'&&s.browserCompatible!==false)
+        ||results.find(s=>['webm','ts'].includes(mediaFormat(s)));
     return json({title:data.title,season:p.season||0,episode:p.episode||0,
-        streamUrl:preferred?.streamUrl||null,downloadUrl:preferred?.downloadUrl||null,
-        filename:preferred?.filename||null,results,subtitles:data.subtitles||[],audioTracks:data.audioTracks||[]});
+        streamUrl:preferredStream?.streamUrl||null,downloadUrl:preferredDownload?.downloadUrl||null,
+        filename:preferredDownload?.filename||null,results,subtitles:data.subtitles||[],audioTracks:data.audioTracks||[]});
 }
