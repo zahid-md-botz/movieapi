@@ -569,6 +569,7 @@ app.get("/docs", (req, res) => serveFile("docs.html", res));
 app.get("/changelog", (req, res) => serveFile("changelog.html", res));
 app.get("/admin", (req, res) => serveFile("admin.html", res));
 app.get("/admin/stats", (req, res) => serveFile("stats.html", res));
+app.get("/manus-routes.json", (req, res) => serveFile("manus-routes.json", res));
 
 // ─── Debug: pool inspector (local dev only) ────────────────────────────────────
 app.get("/debug/logs-view", (req, res) => serveFile("debug-logs.html", res));
