@@ -133,12 +133,17 @@ async function route(request,env) {
             return json({message:'This endpoint has been removed. Football is available at /api/v3/football.'},410);
         if(!path.startsWith('/api/v3/')) return null;
         const media=path.match(/^\/api\/v3\/media\/([^/]+)\/(.*)$/);
+        const legacyUrl=url.searchParams.get('url');
         const ticket=url.searchParams.get('ticket') || media?.[1];
         const stored=playbackPattern.test(path);
         if(['/api/v3/stream','/api/v3/download'].includes(path)||media||stored) {
             if(!['GET','HEAD'].includes(method)) return json({message:'Use GET or HEAD'},405);
-            if(!ticket&&!stored) return json({message:'Use a stream or download URL from /sources. Arbitrary URLs are not accepted.'},400);
-            const data=stored?await storedPlayback(request,env):open(ticket,env.ADMIN_SECRET);
+            if(!ticket&&!stored&&!legacyUrl) return json({message:'Use a stream or download URL from /sources. Arbitrary URLs are not accepted.'},400);
+            // Older clients received /stream?url= and /download?url= links. Keep
+            // those links working, but validate the destination before proxying;
+            // never turn this compatibility path into an open SSRF proxy.
+            const data=stored?await storedPlayback(request,env):ticket?open(ticket,env.ADMIN_SECRET):
+                {url:safeMediaUrl(legacyUrl).href,headers:{},title:'Video',filename:null};
             const checked=await env.ledger({action:'check',key:data.key,origin:request.headers.get('origin')});
             if(checked.status!==200) return json(checked,checked.status);
             let target=data.url;
