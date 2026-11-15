@@ -21,7 +21,7 @@ No separate Python service, Cloudflare Worker, `MOVIEBOX_PROXY_URL`, or public p
 
 Use `/api/v3/sources/:id` for movies. For series, request `/api/v3/episodes/:id`, then `/api/v3/sources/:id?season=1&episode=1` for each selected episode. Anime uses `/api/v3/anime/sources/:id?season=1&episode=1`.
 
-Each source returns `streamUrl`, available `downloadUrl` values, `filename`, and source variants. `downloadUrl` is provided only for single-file formats (MP4/WebM/TS), never for HLS/DASH manifests. Open it with GET to receive the media as an attachment. Use `streamUrl` for playback. The URLs are short-lived (six hours in the current implementation); request fresh sources after expiry. `Range` and `HEAD` are supported for media URLs.
+Each source returns `streamUrl`, available `downloadUrl` values, `filename`, and source variants. `downloadUrl` is provided only for single-file formats (MP4/WebM/TS), never for HLS/DASH manifests. Open it with GET to receive the actual media bytes with `Content-Disposition: attachment` (browser direct download). Use `streamUrl` for in-browser playback: it is returned inline and generic CDN MIME types are normalized to `video/mp4`, `video/webm`, etc. when the source URL identifies that format. The URLs are short-lived (six hours in the current implementation); request fresh sources after expiry. `Range`, `If-Range`, and `HEAD` are supported for media URLs.
 
 The download endpoint returns the actual upstream format. MP4 sources download as MP4. HLS (`.m3u8`) and DASH (`.mpd`) are manifests, not a single MP4 file; select an MP4 source when one is available. This API does not transcode HLS/DASH into MP4.
 
@@ -37,6 +37,7 @@ After obtaining a source response, select a source with `format: mp4` where poss
 4. Test `Range: bytes=0-1023`; expect `206` and a `Content-Range` header when the upstream supports ranges.
 5. Test a series episode and an anime episode separately.
 6. Check Railway logs for `[media-relay] Chrome-impersonating HTTP/2 transport ready`.
+7. If a media URL still returns 502, search logs for `[media-proxy] request=...` and the matching `media_transport.relay` log. The log records the CDN hostname, upstream status, and error class without printing signed query strings or cookies. HTTP/2 connection failures retry once using HTTP/1.1.
 
 A healthy API health-check does not guarantee that MovieBox currently offers a playable source for every title. If the upstream CDN rejects Railway egress or the signed source expires, request fresh sources and inspect the returned HTTP status in Railway logs.
 
