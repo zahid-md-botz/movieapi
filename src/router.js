@@ -153,18 +153,42 @@ async function route(request,env) {
                 if(child.origin!==base.origin || !child.pathname.startsWith(base.pathname)) throw new UpstreamError('Media path escapes its signed directory',403);
                 target=child.href;
             }
-            const upstream=await env.media(target,data.headers,request.headers.get('range'),method);
-            if(!upstream.ok&&upstream.status!==416) {
-                const status=upstream.status; await upstream.body?.cancel();
-                return json({message:`MovieBox media returned HTTP ${status}. Request fresh sources if the signed link expired.`,upstreamStatus:status},status===429?429:502);
+            let upstream;
+            try {
+                upstream=await env.media(target,data.headers,request.headers.get('range'),method,request.headers.get('if-range'));
+            } catch(error) {
+                const requestId=randomBytes(8).toString('hex');
+                let host='unknown'; try { host=new URL(target).hostname; } catch {}
+                console.error(`[media-proxy] request=${requestId} stage=connect host=${host} error=${error?.name||'Error'}`);
+                return json({message:'Media relay could not connect to the upstream source.',code:'MEDIA_RELAY_UNAVAILABLE',requestId},502);
             }
-            const headers=new Headers({'Access-Control-Allow-Origin':'*','Access-Control-Expose-Headers':'Content-Range,Content-Length,Accept-Ranges',
+            if(!upstream.ok&&upstream.status!==416) {
+                const status=upstream.status, requestId=randomBytes(8).toString('hex');
+                let relayMessage='';
+                try { const info=await upstream.clone().json(); relayMessage=String(info.message||info.error||info.code||'').slice(0,180); } catch {}
+                let host='unknown'; try { host=new URL(target).hostname; } catch {}
+                console.error(`[media-proxy] request=${requestId} stage=upstream host=${host} status=${status} detail=${relayMessage.replace(/[\r\n]/g,' ')}`);
+                await upstream.body?.cancel();
+                return json({message:'The upstream media server rejected or failed the media request.',code:'MEDIA_UPSTREAM_ERROR',upstreamStatus:status,requestId},status===429?429:502);
+            }
+            const headers=new Headers({'Access-Control-Allow-Origin':'*','Access-Control-Expose-Headers':'Content-Range,Content-Length,Accept-Ranges,Content-Disposition',
                 'Cache-Control':'private, no-store','X-Content-Type-Options':'nosniff'});
             for(const h of ['content-type','content-length','content-range','accept-ranges','etag','last-modified']) {
                 if(upstream.headers.has(h)) headers.set(h,upstream.headers.get(h));
             }
             if(method==='HEAD'&&upstream.headers.has('x-media-content-length'))
                 headers.set('Content-Length',upstream.headers.get('x-media-content-length'));
+            // Some CDNs label valid MP4/WebM bytes as application/octet-stream.
+            // Normalize only generic/missing MIME types so Chrome's native player
+            // can recognize the media while preserving meaningful upstream types.
+            const targetPath=new URL(target).pathname.toLowerCase();
+            const filenameHint=String(data.filename||'').toLowerCase();
+            const genericType=!headers.has('content-type') || /^(application\/octet-stream|binary\/octet-stream)$/i.test(headers.get('content-type')||'');
+            if(genericType) {
+                const ext=(targetPath.match(/\.(mp4|m4v|webm|ts|m3u8|mpd)(?:$)/)||filenameHint.match(/\.(mp4|m4v|webm|ts|m3u8|mpd)$/)||[])[1];
+                const inferred={mp4:'video/mp4',m4v:'video/mp4',webm:'video/webm',ts:'video/mp2t',m3u8:'application/vnd.apple.mpegurl',mpd:'application/dash+xml'}[ext];
+                if(inferred) headers.set('Content-Type',inferred);
+            }
             const type=headers.get('content-type') || '';
             if(upstream.status!==416&&/(?:text\/html|application\/(?:problem\+)?json)/i.test(type)) {
                 await upstream.body?.cancel();
@@ -173,11 +197,14 @@ async function route(request,env) {
             if(path==='/api/v3/download'||path.startsWith('/api/v3/download/')) {
                 const ext=/mpegurl/i.test(type)?'m3u8':/dash\+xml/i.test(type)?'mpd':
                     /mp2t/i.test(type)?'ts':/webm/i.test(type)?'webm':
-                    new URL(target).pathname.match(/\.(mp4|m4s|m4a|ts|m3u8|mpd)$/i)?.[1]?.toLowerCase() || 'mp4';
+                    new URL(target).pathname.match(/\.(mp4|m4v|m4s|m4a|ts|m3u8|mpd)$/i)?.[1]?.toLowerCase() || 'mp4';
                 const filename=data.filename?data.filename.replace(/\.[^.]+$/,'.'+ext):
                     downloadFilename(data.title,0,0,'Adaptive',ext==='mpd'?'dash':ext==='m3u8'?'hls':ext);
                 headers.set('Content-Disposition',attachmentHeader(filename));
                 headers.set('Access-Control-Expose-Headers','Content-Range,Content-Length,Accept-Ranges,Content-Disposition');
+            } else {
+                // Stream URLs are intended for in-browser playback, not forced download.
+                if(data.filename) headers.set('Content-Disposition',`inline; filename="${String(data.filename).replace(/[\r\n"\\]/g,'_').replace(/[^\x20-\x7e]/g,'_')}"`);
             }
             if(method!=='HEAD' && (/mpegurl|dash\+xml/.test(type)||/\.(m3u8|mpd)(?:\?|$)/.test(target))) {
                 let text=await upstream.text();
