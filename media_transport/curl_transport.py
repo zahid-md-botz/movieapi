@@ -56,29 +56,46 @@ class CurlStreamResponse:
 
         def perform():
             curl = getattr(_stream_local, "curl", None)
+            if curl is None:
+                curl = Curl()
+                _stream_local.curl = curl
+            else:
+                # A worker thread reuses its handle; reset method/options/callbacks
+                # before each new request so a prior HEAD cannot poison the next GET.
+                curl.reset()
+            # Prefer the reference project's HTTP/2 path, then retry a connection
+            # failure once over HTTP/1.1. Do not retry an HTTP response such as 403:
+            # that is a real upstream decision, not a transport negotiation error.
+            versions = (CurlHttpVersion.V2_0, CurlHttpVersion.V1_1)
             try:
-                if curl is None:
-                    curl = Curl()
-                    _stream_local.curl = curl
-                else:
-                    # Reset headers and callbacks while retaining the connection cache.
-                    curl.reset()
-                curl.impersonate("chrome")
-                curl.setopt(CurlOpt.HTTP_VERSION, CurlHttpVersion.V2_0)
-                curl.setopt(CurlOpt.URL, url.encode())
-                curl.setopt(CurlOpt.HTTPHEADER, [f"{key}: {value}".encode() for key, value in headers.items()])
-                curl.setopt(CurlOpt.FOLLOWLOCATION, 0)
-                curl.setopt(CurlOpt.SUPPRESS_CONNECT_HEADERS, 1)
-                curl.setopt(CurlOpt.CONNECTTIMEOUT, 12)
-                curl.setopt(CurlOpt.LOW_SPEED_LIMIT, 1)
-                curl.setopt(CurlOpt.LOW_SPEED_TIME, 90)
-                curl.setopt(CurlOpt.HEADERFUNCTION, header)
-                curl.setopt(CurlOpt.WRITEFUNCTION, write)
-                if method == "HEAD":
-                    curl.setopt(CurlOpt.NOBODY, 1)
-                curl.perform()
-            except Exception as error:
-                self.error = error
+                for attempt, version in enumerate(versions):
+                    if attempt:
+                        curl.reset()
+                        self.status_code = 0
+                        self.headers = httpx.Headers()
+                    try:
+                        curl.impersonate("chrome")
+                        curl.setopt(CurlOpt.HTTP_VERSION, version)
+                        curl.setopt(CurlOpt.URL, url.encode())
+                        curl.setopt(CurlOpt.HTTPHEADER, [f"{key}: {value}".encode() for key, value in headers.items()])
+                        curl.setopt(CurlOpt.FOLLOWLOCATION, 0)
+                        curl.setopt(CurlOpt.SUPPRESS_CONNECT_HEADERS, 1)
+                        curl.setopt(CurlOpt.CONNECTTIMEOUT, 12)
+                        curl.setopt(CurlOpt.LOW_SPEED_LIMIT, 1)
+                        curl.setopt(CurlOpt.LOW_SPEED_TIME, 90)
+                        curl.setopt(CurlOpt.HEADERFUNCTION, header)
+                        curl.setopt(CurlOpt.WRITEFUNCTION, write)
+                        if method == "HEAD":
+                            curl.setopt(CurlOpt.NOBODY, 1)
+                        curl.perform()
+                        if self.status_code:
+                            self.error = None
+                            break
+                        self.error = RuntimeError("No HTTP response headers received")
+                    except Exception as error:
+                        self.error = error
+                        if self.status_code or attempt == len(versions) - 1:
+                            break
             finally:
                 self.finished.set()
                 self.ready.set()
@@ -86,7 +103,7 @@ class CurlStreamResponse:
         self.future = _stream_executor.submit(perform)
         if not self.ready.wait(25) or not self.status_code:
             self.close()
-            raise ValueError("Media connection failed")
+            raise RuntimeError("Media connection failed")
 
     def iter_raw(self, size=65536):
         while not self.finished.is_set() or not self.queue.empty():
@@ -95,7 +112,7 @@ class CurlStreamResponse:
             except Empty:
                 continue
         if self.error and not self.stopped.is_set():
-            raise ValueError("Media transfer interrupted") from None
+            raise RuntimeError("Media transfer interrupted") from None
 
     iter_bytes = iter_raw
 
