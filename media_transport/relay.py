@@ -3,6 +3,7 @@
 Only accepts allowlisted MovieBox CDN URLs. It is intentionally bound to
 127.0.0.1 and is not an internet-facing arbitrary URL proxy.
 """
+import logging
 import re
 import threading
 from urllib.parse import urljoin, urlsplit
@@ -26,6 +27,7 @@ FORWARDED_HEADERS = {
 }
 slots = threading.BoundedSemaphore(MAX_STREAMS)
 app = FastAPI(docs_url=None, redoc_url=None, openapi_url=None)
+logger = logging.getLogger("media_transport.relay")
 
 
 def safe_url(value: str):
@@ -61,13 +63,15 @@ def safe_headers(value):
     return result
 
 
-def open_upstream(method, url, headers, range_value):
+def open_upstream(method, url, headers, range_value, if_range_value=None):
     target = url
     current_headers = dict(headers)
     for _ in range(6):
         safe_url(target)
         if range_value:
             current_headers["Range"] = range_value
+        if if_range_value:
+            current_headers["If-Range"] = if_range_value
         client = CurlStreamClient()
         response = client.send(client.build_request(method, target, current_headers))
         if response.status_code in REDIRECTS:
@@ -108,7 +112,8 @@ async def fetch(request: Request):
         range_value = request.headers.get("range")
         if range_value and (len(range_value) > 100 or not re.fullmatch(r"bytes=\d*-\d*", range_value)):
             raise ValueError("Only a single byte range is supported")
-        response = await run_in_threadpool(open_upstream, method, url, headers, range_value)
+        if_range_value = request.headers.get("if-range")
+        response = await run_in_threadpool(open_upstream, method, url, headers, range_value, if_range_value)
         out_headers = {k: v for k, v in response.headers.items() if k.lower() in FORWARDED_HEADERS}
         status = response.status_code
         if method == "HEAD":
@@ -128,6 +133,9 @@ async def fetch(request: Request):
         def body():
             try:
                 yield from response.iter_raw()
+            except Exception as exc:
+                logger.error("media body interrupted host=%s error=%s", urlsplit(url).hostname or "unknown", type(exc).__name__)
+                raise
             finally:
                 release()
 
@@ -137,9 +145,17 @@ async def fetch(request: Request):
         if response is not None:
             response.close()
         slots.release()
-        return JSONResponse({"message": str(exc)}, status_code=400)
-    except Exception:
+        # Include a safe diagnostic in Railway logs; never log signed URLs or headers.
+        logger.warning("media request rejected: %s", str(exc)[:180])
+        return JSONResponse({"message": str(exc), "code": "MEDIA_REQUEST_REJECTED"}, status_code=400)
+    except Exception as exc:
         if response is not None:
             response.close()
         slots.release()
-        return JSONResponse({"message": "Upstream media connection failed"}, status_code=502)
+        host = "unknown"
+        try:
+            host = (urlsplit(payload.get("url", "")).hostname or "unknown")
+        except Exception:
+            pass
+        logger.error("upstream media connection failed host=%s error=%s", host, type(exc).__name__)
+        return JSONResponse({"message": "Upstream media connection failed", "code": "MEDIA_UPSTREAM_CONNECT_FAILED"}, status_code=502)
