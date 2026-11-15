@@ -4,7 +4,7 @@ import { fetchMedia as fetchNodeMedia } from './tickets.js';
 
 const RELAY_URL = process.env.MEDIA_RELAY_URL || '';
 
-export async function fetchMedia(url, headers, range = null, method = 'GET', fallbackFetch = globalThis.fetch) {
+export async function fetchMedia(url, headers, range = null, method = 'GET', fallbackFetch = globalThis.fetch, ifRange = null) {
     if (!RELAY_URL) return fetchNodeMedia(url, headers, range, method, fallbackFetch);
     const controller = new AbortController();
     const timer = setTimeout(() => controller.abort(new Error('Private media relay timed out before opening the upstream stream')), 160000);
@@ -15,7 +15,8 @@ export async function fetchMedia(url, headers, range = null, method = 'GET', fal
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                ...(range ? { Range: range } : {})
+                ...(range ? { Range: range } : {}),
+                ...(ifRange ? { 'If-Range': ifRange } : {})
             },
             body: JSON.stringify({ url, headers, method }),
             signal: controller.signal
