@@ -7,7 +7,7 @@ import { createOutboundFetch } from './outbound.js';
 
 const outbound=createOutboundFetch();
 const engine=new MovieBox(outbound);
-const media=(url,headers,range,method)=>fetchMedia(url,headers,range,method,outbound);
+const media=(url,headers,range,method,ifRange)=>fetchMedia(url,headers,range,method,outbound,ifRange);
 const callEngine=(action,params)=>engine.call(action,params);
 async function send(response,res) {
     res.status(response.status);
@@ -30,7 +30,7 @@ export function installModern(app) {
                     return send(json({results}),res);
                 }
                 const data=open(req.body.ticket,process.env.ADMIN_SECRET);
-                return send(await media(data.url,data.headers,req.headers.range,req.body.method==='HEAD'?'HEAD':'GET'),res);
+                return send(await media(data.url,data.headers,req.headers.range,req.body.method==='HEAD'?'HEAD':'GET',req.headers['if-range']),res);
             }
             if(process.env.NODE_ENV==='production' && (
                 req.path.startsWith('/debug/') || req.path.startsWith('/try-') ||
