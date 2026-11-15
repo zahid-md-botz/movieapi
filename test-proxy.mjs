@@ -69,7 +69,10 @@ test('CDN rejection is an explicit failure, not a successful playback response',
     const r=await modernRoute(new Request(`https://api.example/api/v3/stream?ticket=${ticket}`),{
         ADMIN_SECRET:'fixture',ledger:async()=>({status:200}),
         media:async()=>new Response('426 Forbidden',{status:426})});
-    assert.equal(r.status,502);assert.equal((await r.json()).upstreamStatus,426);
+    const body=await r.json();
+    assert.equal(r.status,502);
+    assert.equal(body.code,'MEDIA_UPSTREAM_ERROR');
+    assert.equal('upstreamStatus' in body,false);
 });
 
 test('one authenticated outbound proxy carries metadata and media requests',async()=>{
