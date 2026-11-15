@@ -343,7 +343,10 @@ async function sourceResponse(data,key,url,env,p) {
         const saved=await env.ledger({action:'playback-save',key,input:{entries}});
         if(saved.status!==200)throw new UpstreamError(saved.message||'Playback storage unavailable',saved.status);
     }
-    const preferredStream=results.find(s=>mediaFormat(s)==='mp4'&&s.browserCompatible!==false)||results[0];
+    // A direct browser URL must point to a single-file media resource. HLS/DASH
+    // manifests need a player library and cannot reliably play when opened as a
+    // normal URL in Chrome, so do not advertise them as the preferred stream.
+    const preferredStream=results.find(s=>['mp4','webm'].includes(mediaFormat(s))&&s.browserCompatible!==false);
     const preferredDownload=results.find(s=>mediaFormat(s)==='mp4'&&s.browserCompatible!==false)
         ||results.find(s=>['webm','ts'].includes(mediaFormat(s)));
     return json({title:data.title,season:p.season||0,episode:p.episode||0,
