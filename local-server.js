@@ -8,28 +8,27 @@ import crypto from "crypto";
 import axios from "axios";
 import * as cheerio from "cheerio";
 import { installModern } from './src/local-modern.js';
+import { publicOrigin } from './src/public-url.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const app = express();
 const PORT = process.env.PORT || 3400;
 
 // ─── SMTP email helper ──────────────────────────────────────────────────────────
-const smtpTransport = nodemailer.createTransport({
-    host: process.env.SMTP_HOST || 'mail.runflix.name.ng',
+const smtpTransport = process.env.SMTP_HOST ? nodemailer.createTransport({
+    host: process.env.SMTP_HOST,
     port: parseInt(process.env.SMTP_PORT || '587'),
-    secure: false,
-    auth: {
-        user: process.env.SMTP_USER || 'support@runflix.name.ng',
-        pass: process.env.SMTP_PASS || ''
-    },
-    tls: { rejectUnauthorized: false }
-});
+    secure: process.env.SMTP_SECURE === 'true',
+    auth: process.env.SMTP_USER && process.env.SMTP_PASS ? { user: process.env.SMTP_USER, pass: process.env.SMTP_PASS } : undefined,
+    tls: { rejectUnauthorized: process.env.SMTP_REJECT_UNAUTHORIZED !== 'false' }
+}) : null;
 
 async function sendRequestEmail({ name, email, website, useCase }) {
+    if (!smtpTransport) return false; // Configure an email provider separately; SMTP delivery requires a separately configured mail provider.
     try {
         await smtpTransport.sendMail({
-            from: '"RUNFLIX API" <support@runflix.name.ng>',
-            to: 'adtelecom.info@gmail.com',
+            from: process.env.SMTP_FROM || process.env.SMTP_USER || 'myweb615265@gmail.com',
+            to: process.env.SUPPORT_EMAIL || 'myweb615265@gmail.com',
             subject: `New API Key Request — ${name}`,
             text: [
                 `New API key request received:`,
@@ -53,9 +52,25 @@ async function sendRequestEmail({ name, email, website, useCase }) {
 app.use((req, res, next) => {
     res.setHeader("Access-Control-Allow-Origin", "*");
     res.setHeader("Access-Control-Allow-Methods", "GET, HEAD, POST, PUT, DELETE, OPTIONS");
-    res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization, Range");
-    res.setHeader("Access-Control-Expose-Headers", "Content-Length, Content-Range");
+    res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization, X-API-Key, apikey, api-key, Range, If-Range");
+    res.setHeader("Access-Control-Expose-Headers", "Content-Length, Content-Range, Accept-Ranges, Content-Disposition");
     if (req.method === "OPTIONS") return res.sendStatus(204);
+    next();
+});
+
+// When configured, Railway accepts public traffic only from the Cloudflare
+// Worker. Keep the Railway health endpoint available to Railway's healthcheck.
+const edgeSecret = process.env.EDGE_SHARED_SECRET || '';
+function safeSecretEqual(a, b) {
+    if (!a || !b) return false;
+    const x = Buffer.from(String(a)), y = Buffer.from(String(b));
+    return x.length === y.length && crypto.timingSafeEqual(x, y);
+}
+app.use((req, res, next) => {
+    if (!edgeSecret || req.path === '/api/v3/health') return next();
+    if (!safeSecretEqual(req.headers['x-edge-secret'], edgeSecret)) {
+        return res.status(403).json({ status: 403, success: false, creator: 'Zahid dev', code: 'EDGE_ONLY', message: 'Use the official API domain.' });
+    }
     next();
 });
 
@@ -176,19 +191,6 @@ async function fetchWithRotation(url, options = {}) {
 
     // Direct connection (or proxy fallback)
     return fetch(url, options);
-}
-
-// ─── CF Worker relay (bypasses geo-blocks for search + sources) ────────────────
-// Set CF_WORKER_URL=https://your-worker.workers.dev to enable relay mode.
-// When set, geo-blocked endpoints route through the CF Worker's edge IPs instead
-// of hitting the upstream API directly from this server.
-const CF_WORKER_URL = (process.env.CF_WORKER_URL || "").replace(/\/$/, "");
-// API key used when calling the CF Worker relay (must exist in its KV store)
-const CF_WORKER_API_KEY = process.env.CF_WORKER_API_KEY || "runflix_relay_dev_key_2025";
-if (CF_WORKER_URL) {
-    console.log(`[relay] CF Worker relay enabled → ${CF_WORKER_URL}`);
-} else {
-    console.log("[relay] CF Worker relay disabled — set CF_WORKER_URL to enable");
 }
 
 // Base headers — X-Forwarded-For and Host are overridden per-request
@@ -389,34 +391,6 @@ const { ua: V3_UA, ci: V3_CI } = makeV3Identity();
 let v3RuntimeToken = null;
 let _v3InitPromise  = null;
 
-// ─── CF KV token relay ─────────────────────────────────────────────────────────
-// The local server (Replit IPs) can bootstrap the v3 token from tab-operating.
-// CF Worker IPs may be geo-restricted from that endpoint, so after bootstrapping
-// we push the token to CF KV so the worker can read it on cold start.
-const CF_ACCOUNT_ID  = "8979e94775109424eb5e1b66c665e561";
-const CF_KV_NS       = "1a518d50e5c241ae8e5d16974d3fb24c";
-const CF_KV_IDENTITY_KEY = "v3_identity";
-let _lastPushedToken = null;
-
-// Push { token, ua, ci } to CF KV so the CF Worker uses the exact same device
-// identity that this server used during bootstrap (upstream binds token to identity).
-async function pushTokenToCfKv(token) {
-    if (!token || token === _lastPushedToken) return;
-    const cfApiToken = process.env.CLOUDFLARE_API_TOKEN;
-    if (!cfApiToken) return;
-    try {
-        const identity = JSON.stringify({ token, ua: V3_UA, ci: V3_CI });
-        const url = `https://api.cloudflare.com/client/v4/accounts/${CF_ACCOUNT_ID}/storage/kv/namespaces/${CF_KV_NS}/values/${CF_KV_IDENTITY_KEY}`;
-        const res = await fetch(url, {
-            method: "PUT",
-            headers: { "Authorization": `Bearer ${cfApiToken}`, "Content-Type": "application/json" },
-            body: identity,
-        });
-        if (res.ok) { _lastPushedToken = token; console.log("[v3] Identity pushed to CF KV (token + ua + ci)"); }
-        else         { console.warn("[v3] CF KV push failed:", res.status, await res.text()); }
-    } catch (e) { console.warn("[v3] CF KV push error:", e.message); }
-}
-
 // ─── Token bootstrap ───────────────────────────────────────────────────────────
 // The upstream API now requires a Bearer token (from x-user response header) on
 // all endpoints except the homepage. Fetch it once per process start, then reuse.
@@ -448,9 +422,7 @@ async function v3EnsureToken() {
                     if (v3RuntimeToken) break;
                 } catch {}
             }
-            // Push freshly bootstrapped token to CF KV so the worker doesn't need
-            // to call tab-operating from CF IPs (which may be geo-restricted).
-            pushTokenToCfKv(v3RuntimeToken).catch(() => {});
+            // Keep the upstream token in this process for subsequent signed requests.
         })();
     }
     await _v3InitPromise;
@@ -514,7 +486,7 @@ async function v3Fetch(method, pathAndQuery, bodyStr = null) {
             if (xUser) {
                 try {
                     const p = JSON.parse(xUser);
-                    if (p.token) { v3RuntimeToken = p.token; pushTokenToCfKv(v3RuntimeToken).catch(() => {}); }
+                    if (p.token) { v3RuntimeToken = p.token; }
                 } catch {}
             }
 
@@ -560,15 +532,15 @@ function processApiResponse(data) {
 
 // ─── Helpers ───────────────────────────────────────────────────────────────────
 function ok(res, results, extra = {}) {
-    res.json({ status: 200, success: true, creator: "DaraTech", results, ...extra });
+    res.json({ status: 200, success: true, creator: "Zahid dev", results, ...extra });
 }
 
 function err(res, message, status = 500) {
-    res.status(status).json({ status, success: false, creator: "DaraTech", message });
+    res.status(status).json({ status, success: false, creator: "Zahid dev", message });
 }
 
 function serveFile(filename, res) {
-    const filePath = path.join(__dirname, "public", filename);
+    const filePath = path.join(__dirname, filename);
     if (!fs.existsSync(filePath)) return err(res, `File not found: ${filename}`, 404);
     const ext = path.extname(filename);
     const contentType = ext === ".html" ? "text/html" : "application/json";
@@ -614,6 +586,7 @@ app.get("/docs", (req, res) => serveFile("docs.html", res));
 app.get("/changelog", (req, res) => serveFile("changelog.html", res));
 app.get("/admin", (req, res) => serveFile("admin.html", res));
 app.get("/admin/stats", (req, res) => serveFile("stats.html", res));
+app.get("/manus-routes.json", (req, res) => serveFile("manus-routes.json", res));
 
 // ─── Debug: pool inspector (local dev only) ────────────────────────────────────
 app.get("/debug/logs-view", (req, res) => serveFile("debug-logs.html", res));
@@ -626,9 +599,6 @@ app.get("/debug/pool", (req, res) => {
         proxy: proxyRotator.size > 0
             ? { enabled: true, count: proxyRotator.size, note: "HTTP/HTTPS proxies loaded from PROXY_LIST — cycling round-robin" }
             : { enabled: false, note: "Set PROXY_LIST=http://proxy1:port,http://proxy2:port to enable proxy rotation" },
-        relay: CF_WORKER_URL
-            ? { enabled: true, url: CF_WORKER_URL, affects: ["search", "sources"] }
-            : { enabled: false, note: "Set CF_WORKER_URL env var to relay geo-blocked endpoints through your deployed CF Worker" }
     });
 });
 
@@ -672,18 +642,18 @@ for (const [route, file] of Object.entries(sampleFiles)) {
 
 // ─── Static HTML pages ─────────────────────────────────────────────────────────
 app.get("/request-key", (req, res) => {
-    const file = path.join(__dirname, "public", "request-key.html");
+    const file = path.join(__dirname, "request-key.html");
     if (fs.existsSync(file)) return res.sendFile(file);
     res.status(404).send("request-key.html not found");
 });
 
 app.get("/try", (req, res) => {
-    const file = path.join(__dirname, "public", "try.html");
+    const file = path.join(__dirname, "try.html");
     if (fs.existsSync(file)) return res.sendFile(file);
     res.status(404).send("try.html not found");
 });
 
-// ─── POST /anilist-proxy — relay AniList GraphQL for CF Worker (bypasses IP block) ──
+// ─── POST /anilist-proxy — server-side AniList GraphQL relay ──
 app.post("/anilist-proxy", async (req, res) => {
     try {
         const { query, variables } = req.body || {};
@@ -701,7 +671,7 @@ app.post("/anilist-proxy", async (req, res) => {
 });
 
 // ─── Changelog helpers ─────────────────────────────────────────────────────────
-const CHANGELOG_FILE = path.join(__dirname, "public", "changelog.json");
+const CHANGELOG_FILE = path.join(__dirname, "changelog.json");
 function readChangelog() {
     try { return JSON.parse(fs.readFileSync(CHANGELOG_FILE, "utf8")); }
     catch { return []; }
@@ -761,7 +731,7 @@ app.post("/admin/api/generate", (req, res) => {
     if (!checkLocalAdmin(req)) return res.status(401).json({ error: "Unauthorized" });
     const chars = "abcdefghijklmnopqrstuvwxyz0123456789";
     const rand = Array.from({ length: 20 }, () => chars[Math.floor(Math.random() * chars.length)]).join("");
-    res.json({ key: `runflix_${rand}` });
+    res.json({ key: `zahid_${rand}` });
 });
 
 // ─── GET /api/changelog — public changelog feed ────────────────────────────────
@@ -821,29 +791,6 @@ app.delete("/admin/api/changelog/:id", (req, res) => {
     res.json({ ok: true });
 });
 
-// ─── POST /admin/api/changelog/push-to-worker — seed KV from changelog.json ──
-app.post("/admin/api/changelog/push-to-worker", async (req, res) => {
-    if (!checkLocalAdmin(req)) return res.status(401).json({ error: "Unauthorized" });
-    const workerUrl = (req.body?.worker_url || CF_WORKER_URL || "").replace(/\/$/, "");
-    if (!workerUrl) {
-        return res.status(400).json({ error: "No CF Worker URL configured. Set CF_WORKER_URL env var or pass worker_url in the request body." });
-    }
-    const workerSecret = req.body?.worker_secret || process.env.WORKER_ADMIN_SECRET || LOCAL_ADMIN_SECRET;
-    const entries = readChangelog();
-    try {
-        const r = await fetch(`${workerUrl}/admin/api/changelog/bulk`, {
-            method: "PUT",
-            headers: { "Content-Type": "application/json", "Authorization": `Bearer ${workerSecret}` },
-            body: JSON.stringify(entries)
-        });
-        const data = await r.json().catch(() => ({}));
-        if (!r.ok) return res.status(r.status).json({ error: data.error || `Worker responded with ${r.status}` });
-        res.json({ ok: true, count: entries.length, workerUrl });
-    } catch (e) {
-        res.status(502).json({ error: "Could not reach CF Worker: " + e.message });
-    }
-});
-
 // ─── POST /api/request-key — submit key request + send email ───────────────────
 app.post("/api/request-key", async (req, res) => {
     const { name, email, website, useCase } = req.body || {};
@@ -852,32 +799,6 @@ app.post("/api/request-key", async (req, res) => {
     const emailSent = await sendRequestEmail({ name, email, website, useCase });
     if (!emailSent) console.warn("[api/request-key] Email could not be sent — check SMTP settings");
     res.json({ ok: true, id });
-});
-
-// ─── GET /relay-search/:query — proxies to any CF Worker URL (no quota) ────────
-// Used by try.html when the user has entered a CF Worker URL in the relay config.
-// Runs server-side so no API key is exposed in browser JS.
-app.get("/relay-search/:query", async (req, res) => {
-    const query = decodeURIComponent(req.params.query).trim();
-    if (!query) return res.status(400).json({ error: "query is required" });
-
-    const workerUrl = (req.query.worker_url || CF_WORKER_URL || "").replace(/\/$/, "");
-    if (!workerUrl) return res.status(400).json({ error: "No CF Worker URL configured. Set worker_url param or CF_WORKER_URL env var." });
-
-    try {
-        const qs = new URLSearchParams({
-            page: req.query.page || 1,
-            perPage: req.query.perPage || 24,
-            type: req.query.type || 0
-        });
-        const r = await fetch(`${workerUrl}/api/v3/search/${encodeURIComponent(query)}?${qs}`, {
-            headers: { "Authorization": `Bearer ${CF_WORKER_API_KEY}` }
-        });
-        const data = await r.json();
-        res.json(data);
-    } catch (e) {
-        res.status(500).json({ success: false, message: "Relay search failed: " + e.message });
-    }
 });
 
 // ─── GET /try-search/:query — free-tier search (no API key) ─────────────────────
@@ -895,7 +816,7 @@ app.get("/try-search/:query", async (req, res) => {
 
     if (used >= DAILY_LIMIT) {
         return res.status(429).json({
-            status: 429, success: false, creator: "DaraTech",
+            status: 429, success: false, creator: "Zahid dev",
             message: `Free tier daily limit (${DAILY_LIMIT} searches) reached. Request a full API key at /request-key.`
         });
     }
@@ -910,7 +831,7 @@ app.get("/try-search/:query", async (req, res) => {
         });
         const items = (v3Data?.results?.[0]?.subjects || v3Data?.items || []).map(normaliseItem);
         return res.json({
-            status: 200, success: true, creator: "DaraTech",
+            status: 200, success: true, creator: "Zahid dev",
             freeTier: true,
             remaining: DAILY_LIMIT - used - 1,
             results: { items: items.slice(0, 10), query }
@@ -1574,7 +1495,7 @@ app.get("/api/v3/anime/sources/:id", async (req, res) => {
         const videoList = resourceData?.list || [];
         if (videoList.length === 0) return err(res, "No video sources found for this anime title", 404);
 
-        const baseUrl = 'https://movieapi.runflix.name.ng';
+        const baseUrl = publicOrigin(req);
 
         const rawSources = videoList.map(f => {
             const label = normaliseQualityLabel(f.resolution);
@@ -1614,7 +1535,7 @@ app.get("/api/v3/anime/sources/:id", async (req, res) => {
             subjectId:    d.subjectId || ""
         }));
 
-        res.json({ status: 200, success: true, creator: "DaraTech", results: sources, subtitles, audioTracks });
+        res.json({ status: 200, success: true, creator: "Zahid dev", results: sources, subtitles, audioTracks });
     } catch (e) {
         err(res, "Failed to fetch anime sources: " + e.message);
     }
@@ -1662,7 +1583,7 @@ app.get("/api/v3/sources/:id", async (req, res) => {
         const episode = parseInt(req.query.episode) || 0;
 
         // ── Primary: v3 resource endpoint (api6.aoneroom.com) ──────────────────
-        // (CF_WORKER relay removed here: v3 resource endpoint handles this directly)
+        // (legacy relay removed here: v3 resource endpoint handles this directly)
         // Returns direct video URLs — bypasses the 403 "invalid region" from old mirrors.
         const v3Params = { subjectId: movieId };
         if (season || episode) { v3Params.se = season; v3Params.ep = episode; }
@@ -1670,7 +1591,7 @@ app.get("/api/v3/sources/:id", async (req, res) => {
         const videoList = v3ResourceData?.list || [];
 
         if (videoList.length > 0) {
-            const baseUrl = 'https://movieapi.runflix.name.ng';
+            const baseUrl = publicOrigin(req);
 
             const rawSources = videoList.map(f => {
                 const label = normaliseQualityLabel(f.resolution);
@@ -1712,7 +1633,7 @@ app.get("/api/v3/sources/:id", async (req, res) => {
                     subjectId:    d.subjectId || ""
                 }));
             } catch {}
-            return res.json({ status:200, success:true, creator:"DaraTech", results:sources, subtitles, audioTracks });
+            return res.json({ status:200, success:true, creator:"Zahid dev", results:sources, subtitles, audioTracks });
         }
 
         // ── Fallback: old h5-bff mirrors (kept as safety net) ──────────────────
@@ -1780,7 +1701,7 @@ app.get("/api/v3/sources/:id", async (req, res) => {
         }
 
         if (sources.length === 0) return err(res, "No sources found via v3 or legacy mirrors");
-        res.json({ status:200, success:true, creator:"DaraTech", usedFallback:true, results:sources, subtitles:captions, audioTracks });
+        res.json({ status:200, success:true, creator:"Zahid dev", usedFallback:true, results:sources, subtitles:captions, audioTracks });
     } catch (e) {
         err(res, "Failed to fetch sources: " + e.message);
     }
@@ -2280,12 +2201,12 @@ async function mgBrowse(filters={}, page=1) {
     const path = page>1 ? `/manga/page/${page}/${q?`?${q}`:''}` : `/manga/${q?`?${q}`:''}`;
     return mgListingPage(path, page);
 }
-function mgRes(results) { return { status: 200, success: true, creator: 'DaraTech', results }; }
-function mgErr(res, e, code=502) { res.status(code).json({ status: code, success: false, creator: 'DaraTech', message: e.message||'Manga fetch failed' }); }
+function mgRes(results) { return { status: 200, success: true, creator: 'Zahid dev', results }; }
+function mgErr(res, e, code=502) { res.status(code).json({ status: code, success: false, creator: 'Zahid dev', message: e.message||'Manga fetch failed' }); }
 function mgPage(v) { const n=parseInt(v,10); return Number.isFinite(n)&&n>0?n:1; }
 
 app.get('/api/v3/manga/home',          async (req, res) => { try { res.json(mgRes(await mgHomepage())); } catch(e) { mgErr(res, e); } });
-app.get('/api/v3/manga/search',        async (req, res) => { const q=String(req.query.q||'').trim(); if (!q) return res.status(400).json({ status:400, success:false, creator:'DaraTech', message:"Query param 'q' required" }); try { res.json(mgRes(await mgSearch(q))); } catch(e) { mgErr(res, e); } });
+app.get('/api/v3/manga/search',        async (req, res) => { const q=String(req.query.q||'').trim(); if (!q) return res.status(400).json({ status:400, success:false, creator:'Zahid dev', message:"Query param 'q' required" }); try { res.json(mgRes(await mgSearch(q))); } catch(e) { mgErr(res, e); } });
 app.get('/api/v3/manga/genres',        async (req, res) => { try { res.json(mgRes(await mgGenres())); } catch(e) { mgErr(res, e); } });
 app.get('/api/v3/manga/latest',        async (req, res) => { try { res.json(mgRes(await mgListingPage(mgPage(req.query.page)>1?`/manga/page/${mgPage(req.query.page)}/?order=update`:`/manga/?order=update`, mgPage(req.query.page)))); } catch(e) { mgErr(res, e); } });
 app.get('/api/v3/manga/popular',       async (req, res) => { try { res.json(mgRes(await mgListingPage(mgPage(req.query.page)>1?`/manga/page/${mgPage(req.query.page)}/?order=popular`:`/manga/?order=popular`, mgPage(req.query.page)))); } catch(e) { mgErr(res, e); } });
@@ -2357,7 +2278,7 @@ app.get('/api/v3/manga/download/:slug', async (req, res) => {
 
 // ─── Start ─────────────────────────────────────────────────────────────────────
 app.listen(PORT, () => {
-    console.log(`\n✅ RUNFLIX Movie API — Local Dev Server`);
+    console.log(`\n✅ ZAHID MOVIE API Movie API — Local Dev Server`);
     console.log(`   Running on http://localhost:${PORT}`);
     console.log(`   Mirrors: ${MIRROR_HOSTS.length} hosts (rotating per-request)`);
     console.log(`   IP pool: ${IP_POOL.length} X-Forwarded-For addresses (random per-request)`);
