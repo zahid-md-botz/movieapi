@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <title>Live Channel Tester — RUNFLIX</title>
+  <title>Live Channel Tester — ZAHID MOVIE API</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/hls.js@1.5.7/dist/hls.min.js"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
@@ -98,7 +98,30 @@
     /* Setup screen */
     #setup{display:flex;flex-direction:column;align-items:center;justify-content:center;flex:1;gap:16px;padding:24px}
     #setup.hidden{display:none}
-  </style>
+
+        /* Smooth motion polish: subtle, fast, and respectful of reduced-motion. */
+        :root { scroll-behavior: smooth; }
+        body { animation: page-enter .42s cubic-bezier(.22,1,.36,1) both; }
+        main > section, main > div { animation: content-rise .55s cubic-bezier(.22,1,.36,1) both; }
+        main > section:nth-child(2), main > div:nth-child(2) { animation-delay: .06s; }
+        main > section:nth-child(3), main > div:nth-child(3) { animation-delay: .12s; }
+        main > section:nth-child(4), main > div:nth-child(4) { animation-delay: .18s; }
+        a, button, input, select, textarea, .nav-link, .btn, .btn-primary, .btn-ghost, .btn-email {
+            transition: transform .22s cubic-bezier(.22,1,.36,1), color .22s ease,
+                        background-color .22s ease, border-color .22s ease, box-shadow .22s ease;
+        }
+        .btn:hover, .btn-primary:hover, .btn-ghost:hover, .btn-email:hover,
+        button:not(:disabled):hover { transform: translateY(-2px); }
+        .nav-link:hover { transform: translateX(2px); }
+        .endpoint-card, .stat-card, .glass, .card { transition: transform .28s cubic-bezier(.22,1,.36,1), box-shadow .28s ease, border-color .28s ease; }
+        .endpoint-card:hover, .stat-card:hover, .glass:hover, .card:hover { transform: translateY(-3px); box-shadow: 0 14px 36px rgba(0,0,0,.18); }
+        @keyframes page-enter { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes content-rise { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @media (prefers-reduced-motion: reduce) {
+            :root { scroll-behavior: auto; }
+            *, *::before, *::after { animation-duration: .001ms !important; animation-iteration-count: 1 !important; transition-duration: .001ms !important; scroll-behavior: auto !important; }
+        }
+    </style>
 </head>
 <body>
 <div id="root">
@@ -106,7 +129,7 @@
   <!-- ═══ HEADER ═══════════════════════════════════════════════════════ -->
   <header style="background:#0a0d14;border-bottom:1px solid #1a2236;padding:10px 14px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;flex-shrink:0">
     <div style="display:flex;align-items:center;gap:8px">
-      <span style="color:#06b6d4;font-family:monospace;font-weight:700;font-size:14px;letter-spacing:.12em">RUNFLIX</span>
+      <span style="color:#06b6d4;font-family:monospace;font-weight:700;font-size:14px;letter-spacing:.12em">ZAHID MOVIE API</span>
       <span style="color:#374151">·</span>
       <span style="color:#64748b;font-size:12px">Live Channel Tester</span>
       <span style="padding:2px 6px;border-radius:4px;background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.2);color:#f87171;font-size:9px;font-weight:700;letter-spacing:.1em">PRIVATE</span>
@@ -338,15 +361,15 @@ let testing      = false;
 let testWorker   = null;
 let sfFilter     = '';          // status filter
 let listOpen     = true;        // mobile list toggle — starts open
-let concurrency  = parseInt(localStorage.getItem('runflix_cc') || '2', 10);
+let concurrency  = parseInt(localStorage.getItem('zahid_cc') || '2', 10);
 const AUTO_STALE = 2 * 60 * 60 * 1000;  // auto-test if batch is older than this
-const LS_BATCH   = 'runflix_batch_at_v1';
-const LS_AUTO    = 'runflix_auto_v1';
+const LS_BATCH   = 'zahid_batch_at_v1';
+const LS_AUTO    = 'zahid_auto_v1';
 
 /* ─── localStorage persistence ──────────────────────── */
-const LS_CH = 'runflix_ch_v1';
-const LS_ST = 'runflix_st_v1';
-const LS_AT = 'runflix_at_v1';
+const LS_CH = 'zahid_ch_v1';
+const LS_ST = 'zahid_st_v1';
+const LS_AT = 'zahid_at_v1';
 const CACHE_TTL = 2 * 60 * 60 * 1000; // 2 hours
 
 function persistChannels() {
@@ -920,7 +943,7 @@ function _finishTest(completed = false) {
 /* ─── Concurrency + auto-test settings ──────────────── */
 function setConcurrency(n) {
   concurrency = n;
-  try { localStorage.setItem('runflix_cc', String(n)); } catch {}
+  try { localStorage.setItem('zahid_cc', String(n)); } catch {}
   [1, 2, 3, 5].forEach(v => {
     const el = document.getElementById('cc-' + v);
     if (el) el.classList.toggle('on', v === n);
@@ -1058,7 +1081,7 @@ function exportM3U() {
   const a       = document.createElement('a');
   const ts      = new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19);
   a.href        = url;
-  a.download    = `runflix-working-${ts}.m3u`;
+  a.download    = `zahid-working-${ts}.m3u`;
   document.body.appendChild(a);
   a.click();
   document.body.removeChild(a);
@@ -1088,7 +1111,7 @@ function exportReport() {
   const a    = document.createElement('a');
   const ts   = new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19);
   a.href     = url;
-  a.download = `runflix-channels-${ts}.csv`;
+  a.download = `zahid-channels-${ts}.csv`;
   document.body.appendChild(a);
   a.click();
   document.body.removeChild(a);
