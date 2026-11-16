@@ -2,10 +2,11 @@ name = "movieapi"
 main = "runtime-worker.js"
 compatibility_date = "2026-10-01"
 compatibility_flags = ["nodejs_compat"]
-account_id = "8979e94775109424eb5e1b66c665e561"
+account_id = "b3a296aafac0c22ecc9409d0041a56aa"
+
 
 [vars]
-ENGINE_RELAY_URL = "https://YOUR-RAILWAY-SERVICE.up.railway.app"
+ENGINE_RELAY_URL = "https://movieapi-production-59c04909.up.railway.app"
 
 [observability]
 enabled = true
