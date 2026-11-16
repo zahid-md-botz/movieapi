@@ -158,7 +158,7 @@ export class MovieBox {
             seen.add(url);
             const q=String(s.resolutions || s.resolution || '');
             results.push({id:String(s.id||s.resourceId||''),url,quality:q.endsWith('p')?q:q+'p',
-                qualityValue:parseInt(q)||0,format:s.format||(/\.mpd(?:\?|$)/.test(url)?'DASH':'MP4'),
+                qualityValue:parseInt(q)||0,format:(()=>{const declared=String(s.format||'').toLowerCase();const path=String(url).split('?')[0].toLowerCase();if(declared.includes('dash')||declared==='mpd'||path.endsWith('.mpd'))return 'DASH';if(declared.includes('hls')||declared==='m3u8'||path.endsWith('.m3u8'))return 'HLS';if(declared.includes('webm')||path.endsWith('.webm'))return 'WEBM';if(declared==='ts'||path.endsWith('.ts'))return 'TS';return s.format||'MP4';})(),
                 size:s.size||null,duration:s.duration||null,codec:s.codecName||null,
                 browserCompatible:!/(hevc|h265|hvc1|hev1)/i.test(s.codecName||''),
                 requireMemberType:s.requireMemberType??0,
