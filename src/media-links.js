@@ -3,11 +3,8 @@ const clean=(value,fallback,max=120)=>String(value||fallback)
 
 export function mediaFormat(source) {
     const format=String(source.format||'').toLowerCase();
-    const path=String(source.url||'').split('?')[0].toLowerCase();
-    if(format.includes('dash')||format==='mpd'||path.endsWith('.mpd'))return 'dash';
-    if(format.includes('hls')||format==='m3u8'||path.endsWith('.m3u8'))return 'hls';
-    if(format.includes('webm')||path.endsWith('.webm'))return 'webm';
-    if(format==='ts'||path.endsWith('.ts'))return 'ts';
+    if(format==='dash'||/\.mpd(?:\?|$)/i.test(source.url||''))return 'dash';
+    if(format==='hls'||/\.m3u8(?:\?|$)/i.test(source.url||''))return 'hls';
     return format||'mp4';
 }
 export function resolution(source) {
@@ -16,7 +13,7 @@ export function resolution(source) {
 export function downloadFilename(title,season,episode,quality,format='mp4') {
     const coordinates=Number(season)>0&&Number(episode)>0?` S${Number(season)}E${Number(episode)}`:'';
     const ext={dash:'mpd',hls:'m3u8',webm:'webm',ts:'ts'}[format]||'mp4';
-    return `${clean(title,'Video')}${coordinates} ${clean(quality,'Adaptive',32)} Zahid dev-Movieapi.${ext}`;
+    return `${clean(title,'Video')}${coordinates} ${clean(quality,'Adaptive',32)} DaraTech-Movieapi.${ext}`;
 }
 export function attachmentHeader(filename) {
     const safe=String(filename).replace(/[\r\n]/g,'').replace(/["\\]/g,'_');
