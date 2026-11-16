@@ -38,8 +38,8 @@ export function submitRequest(store,input,rateKey) {
         ON CONFLICT(id) DO UPDATE SET window=excluded.window,count=CASE WHEN window=excluded.window THEN count+1 ELSE 1 END`,id,window);
     const requestId='req_'+crypto.randomUUID().replaceAll('-',''),now=new Date().toISOString();
     store.sql.exec('INSERT INTO key_requests(id,payload,created_at) VALUES(?,?,?)',requestId,JSON.stringify(data),now);
-    return {status:201,requestId,emailUrl:requestContact(data,requestId),
-        message:'Your request has been saved for review. Email support will open with your request details ready to send.'};
+    return {status:201,requestId,whatsappUrl:requestContact(data,requestId),
+        message:'Your request has been saved for review. Continue to WhatsApp and send the prepared message to complete your request.'};
 }
 export function reviewRequest(store,id,decision,input={}) {
     const request=listRequests(store).find(r=>r.id===id);
