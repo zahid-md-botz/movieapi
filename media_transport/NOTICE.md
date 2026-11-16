@@ -1,1 +1,0 @@
-The Chrome-impersonating HTTP/2 streaming transport in `curl_transport.py` is adapted from the supplied reference `movieapi/media-transport/curl_transport.py` implementation. The accompanying reference project identifies its MovieBox request-signing and stream-extraction adaptation as MIT-licensed; see the repository-level `UPSTREAM-LICENSE.txt` for that notice.
