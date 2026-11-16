@@ -148,7 +148,7 @@ async function route(request,env) {
                 if(child.origin!==base.origin || !child.pathname.startsWith(base.pathname)) throw new UpstreamError('Media path escapes its signed directory',403);
                 target=child.href;
             }
-            const upstream=await env.media(target,data.headers,request.headers.get('range'),method);
+            const upstream=await env.media(target,data.headers,request.headers.get('range'),method,request.headers.get('if-range'));
             if(!upstream.ok&&upstream.status!==416) {
                 const status=upstream.status; await upstream.body?.cancel();
                 return json({message:`MovieBox media returned HTTP ${status}. Request fresh sources if the signed link expired.`,upstreamStatus:status},status===429?429:502);
@@ -213,6 +213,13 @@ async function route(request,env) {
         }
         // Manga keeps its existing provider but now passes through the same quota gate.
         if(path.startsWith('/api/v3/manga')) return null;
+        if(env.CONTENT_ON_RAILWAY) {
+            const query=Object.fromEntries([...new Set(url.searchParams.keys())].map(k=>[k,url.searchParams.get(k)]));
+            const payload=await env.engine('catalog-query',{path,query});
+            if(payload.kind==='sources')return sourceResponse(payload.data,key,url,env,payload.params);
+            proxyTrailers(payload.data,key,url.origin,env.ADMIN_SECRET);
+            return json(payload.kind==='direct'?payload.data:{results:payload.data});
+        }
         const p={page:num(url.searchParams.get('page'),1),perPage:num(url.searchParams.get('perPage'),20,100),
             type:num(url.searchParams.get('type'),0,2),season:num(url.searchParams.get('season')||url.searchParams.get('se'),0),
             episode:num(url.searchParams.get('episode')||url.searchParams.get('ep'),0)};
@@ -290,6 +297,17 @@ export async function modernRoute(request,env) {
         const now=new Date();h.set('X-RateLimit-Reset',String(Math.floor(Date.UTC(now.getUTCFullYear(),now.getUTCMonth(),now.getUTCDate()+1)/1000)));
     }
     return response;
+}
+function proxyTrailers(value,key,origin,secret,depth=0) {
+    if(!value||typeof value!=='object'||depth>40)return;
+    const address=value.trailer?.videoAddress;
+    if(address?.url) {
+        safeMediaUrl(address.url);
+        const ticket=seal({key,url:address.url,title:value.title||'Trailer',exp:Date.now()+6*60*60*1000,
+            headers:{'User-Agent':'Mozilla/5.0',Referer:'https://moviebox.ph/'}},secret);
+        address.url=`${origin}/api/v3/stream?ticket=${ticket}`;
+    }
+    for(const [name,child] of Object.entries(value)) if(name!=='trailer')proxyTrailers(child,key,origin,secret,depth+1);
 }
 async function sourceResponse(data,key,url,env,p) {
     const expires=Date.now()+6*60*60*1000,entries=[];
