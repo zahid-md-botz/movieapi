@@ -55,9 +55,9 @@ test('key configuration, metadata and rotation preserve usage and revoke previou
     assert.equal(next.usage.allTime,1);assert.equal(next.createdAt,original.createdAt);
     assert.equal(next.email,original.email);assert.equal(next.note,'Private note');assert.equal(next.limits.daily,20);
     assert.equal(store.get('config-key'),null);assert.equal(store.playback(token).status,401);
-    assert.throws(()=>store.update('rotated-key',{newKey:'daratechapi'}),e=>e.status===409);
+    assert.throws(()=>store.update('rotated-key',{newKey:'zahidmovieapi'}),e=>e.status===409);
     assert.equal(store.get('rotated-key').owner,'Changed');
-    assert.match(store.create({key:'  '}).key,/^runflix_/);
+    assert.match(store.create({key:'  '}).key,/^zahid_/);
     assert.throws(()=>store.update('rotated-key',{expiresAt:'2027-02-30'}),e=>e.status===400);
     assert.throws(()=>store.update('rotated-key',{limits:[]}),e=>e.status===400);
 });
@@ -75,7 +75,7 @@ test('missing, invalid, disabled, expired and every quota period have distinct e
         const {r,data}=await request('/api/v3/search/test','GET',undefined,key);
         assert.equal(r.status,status);assert.equal(data.code,code);assert.equal(data.success,false);
         assert.equal(typeof data.error,'string');assert.equal(data.message,data.error);
-        assert.equal(new URL(data.contact).hostname,'wa.me');
+        assert.equal(new URL(data.contact).protocol,'mailto:');
         assert.equal(JSON.stringify(data).includes(key),false);assert.equal(JSON.stringify(data).includes('private-admin-note'),false);
         if(name==='daily'||name==='monthly')assert.ok(Number(r.headers.get('Retry-After'))>0);
     }
@@ -85,7 +85,7 @@ test('checker shows exhausted usage without spending quota or leaking credential
     const {r,data}=await request('/key/info?api_key=checker-key');
     assert.equal(r.status,200);assert.equal(data.valid,true);assert.equal(data.keyStatus,'daily_limit_exceeded');
     assert.equal(data.quotaExceeded,true);assert.equal(data.requests,0);assert.equal(data.dailyLimit,0);
-    assert.equal(new URL(data.contact).hostname,'wa.me');
+    assert.equal(new URL(data.contact).protocol,'mailto:');
     assert.equal(JSON.stringify(data).includes('checker-key'),false);assert.equal(JSON.stringify(data).includes('secret-note'),false);
     assert.equal(store.get('checker-key').usage.allTime,0);
 });
@@ -94,8 +94,8 @@ test('public submission persists; admin approval, rejection and deletion are aut
     const submitted=await request('/api/request-key','POST',applicant);
     assert.equal(submitted.r.status,201);const id=submitted.data.requestId;
     assert.ok(id.startsWith('req_'));assert.equal(submitted.data.key,undefined);
-    const handoff=new URL(submitted.data.whatsappUrl);
-    assert.equal(handoff.hostname,'wa.me');assert.ok(handoff.searchParams.get('text').includes(id));
+    const handoff=new URL(submitted.data.emailUrl);
+    assert.equal(handoff.protocol,'mailto:');assert.ok(handoff.searchParams.get('body').includes(id));
     assert.equal((await request('/admin/api/requests')).r.status,401);
     const listed=await request('/admin/api/requests','GET',undefined,'fixture-admin');
     assert.equal(listed.data.requests[0].status,'pending');
@@ -114,7 +114,7 @@ test('public submission persists; admin approval, rejection and deletion are aut
 test('invalid and duplicate approvals leave requests pending, without partial key writes',async()=>{
     const {request,store}=fixture();
     const {data}=await request('/api/request-key','POST',applicant),id=data.requestId;
-    let result=await request(`/admin/api/requests/${id}/approve`,'POST',{key:'daratechapi'},'fixture-admin');
+    let result=await request(`/admin/api/requests/${id}/approve`,'POST',{key:'zahidmovieapi'},'fixture-admin');
     assert.equal(result.r.status,409);
     result=await request(`/admin/api/requests/${id}/approve`,'POST',
         {key:'partial-key',reason:'x'.repeat(1001)},'fixture-admin');
@@ -137,16 +137,16 @@ test('storage outages fail closed with 503 instead of treating valid keys as inv
 });
 test('public-key checker and quota errors request a new key; personal keys offer WhatsApp upgrades',async()=>{
     const {request,store}=fixture();
-    store.update('daratechapi',{limits:{daily:0}});
-    const publicCheck=await request('/api/key/check','POST',{key:'daratechapi'});
+    store.update('zahidmovieapi',{limits:{daily:0}});
+    const publicCheck=await request('/api/key/check','POST',{key:'zahidmovieapi'});
     assert.equal(publicCheck.data.contact,'/request-key');
     assert.equal(publicCheck.data.contactAction,'request_key');
     assert.equal(publicCheck.data.contactLabel,'Request your own key');
-    const publicError=await request('/api/v3/search/test','GET',undefined,'daratechapi');
+    const publicError=await request('/api/v3/search/test','GET',undefined,'zahidmovieapi');
     assert.equal(publicError.r.status,429);assert.equal(publicError.data.contact,'/request-key');
     store.create({key:'personal-free',plan:'free',limits:{daily:0}});
     const personal=await request('/api/key/check','POST',{key:'personal-free'});
     assert.equal(personal.data.contactAction,'upgrade');
-    assert.equal(new URL(personal.data.contact).hostname,'wa.me');
+    assert.equal(new URL(personal.data.contact).protocol,'mailto:');
     assert.equal(JSON.stringify(personal.data).includes('personal-free'),false);
 });
