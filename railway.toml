@@ -1,9 +1,10 @@
 [build]
 builder = "DOCKERFILE"
-dockerfilePath = "python-origin/Dockerfile.root"
+dockerfilePath = "Dockerfile"
 
 [deploy]
-healthcheckPath = "/health"
+startCommand = "npm start"
+healthcheckPath = "/api/v3/health"
 healthcheckTimeout = 120
 restartPolicyType = "ON_FAILURE"
 restartPolicyMaxRetries = 5
