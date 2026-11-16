@@ -3,18 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ZAHID MOVIE API | Changelog</title>
-    <meta name="description" content="Follow updates to Zahid dev MovieAPI, including MovieBox endpoints, API authentication, stream links, and developer tools.">
+    <title>DaraTech MovieAPI Changelog | Product Updates</title>
+    <meta name="description" content="Follow updates to DaraTech MovieAPI, including MovieBox endpoints, API authentication, stream links, and developer tools.">
     <meta name="robots" content="index,follow">
     <meta name="theme-color" content="#050508">
-    <link rel="canonical" href="https://YOUR-RAILWAY-DOMAIN.up.railway.app/changelog">
+    <link rel="canonical" href="https://movieapi.runflix.name.ng/changelog">
     <meta property="og:type" content="website">
-    <meta property="og:site_name" content="Zahid dev MovieAPI">
-    <meta property="og:title" content="Zahid dev MovieAPI Changelog">
-    <meta property="og:description" content="MovieAPI releases and product updates from Zahid dev.">
-    <meta property="og:url" content="https://YOUR-RAILWAY-DOMAIN.up.railway.app/changelog">
+    <meta property="og:site_name" content="DaraTech MovieAPI">
+    <meta property="og:title" content="DaraTech MovieAPI Changelog">
+    <meta property="og:description" content="MovieAPI releases and product updates from DaraTech.">
+    <meta property="og:url" content="https://movieapi.runflix.name.ng/changelog">
     <meta name="twitter:card" content="summary">
-    <link rel="icon" type="image/x-icon" href="/favicon.svg">
+    <link rel="icon" type="image/x-icon" href="https://runflix.name.ng/favicon.png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -92,36 +92,13 @@
         #loadingState { text-align: center; padding: 3rem; color: var(--muted); }
         .spinner { display: inline-block; width: 20px; height: 20px; border: 2px solid rgba(139,92,246,0.2); border-top-color: #8b5cf6; border-radius: 50%; animation: spin 0.7s linear infinite; margin-bottom: 0.75rem; }
         @keyframes spin { to { transform: rotate(360deg); } }
-
-        /* Smooth motion polish: subtle, fast, and respectful of reduced-motion. */
-        :root { scroll-behavior: smooth; }
-        body { animation: page-enter .42s cubic-bezier(.22,1,.36,1) both; }
-        main > section, main > div { animation: content-rise .55s cubic-bezier(.22,1,.36,1) both; }
-        main > section:nth-child(2), main > div:nth-child(2) { animation-delay: .06s; }
-        main > section:nth-child(3), main > div:nth-child(3) { animation-delay: .12s; }
-        main > section:nth-child(4), main > div:nth-child(4) { animation-delay: .18s; }
-        a, button, input, select, textarea, .nav-link, .btn, .btn-primary, .btn-ghost, .btn-email {
-            transition: transform .22s cubic-bezier(.22,1,.36,1), color .22s ease,
-                        background-color .22s ease, border-color .22s ease, box-shadow .22s ease;
-        }
-        .btn:hover, .btn-primary:hover, .btn-ghost:hover, .btn-email:hover,
-        button:not(:disabled):hover { transform: translateY(-2px); }
-        .nav-link:hover { transform: translateX(2px); }
-        .endpoint-card, .stat-card, .glass, .card { transition: transform .28s cubic-bezier(.22,1,.36,1), box-shadow .28s ease, border-color .28s ease; }
-        .endpoint-card:hover, .stat-card:hover, .glass:hover, .card:hover { transform: translateY(-3px); box-shadow: 0 14px 36px rgba(0,0,0,.18); }
-        @keyframes page-enter { from { opacity: 0; } to { opacity: 1; } }
-        @keyframes content-rise { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        @media (prefers-reduced-motion: reduce) {
-            :root { scroll-behavior: auto; }
-            *, *::before, *::after { animation-duration: .001ms !important; animation-iteration-count: 1 !important; transition-duration: .001ms !important; scroll-behavior: auto !important; }
-        }
     </style>
 </head>
 <body>
     <header>
         <div class="logo">
             <div class="logo-icon"><i class="fas fa-film"></i></div>
-            <span class="logo-text">ZAHID MOVIE API</span>
+            <span class="logo-text">RUNFLIX</span>
             <span class="logo-sub">MOVIE API</span>
         </div>
         <nav class="nav-links">
@@ -135,7 +112,7 @@
         <div class="hero">
             <div class="hero-eyebrow"><i class="fas fa-scroll" style="margin-right:6px;"></i>What's New</div>
             <h1 class="hero-title">API Changelog</h1>
-            <p class="hero-desc">Every update, fix, and improvement to the ZAHID MOVIE API Movie API — newest first.</p>
+            <p class="hero-desc">Every update, fix, and improvement to the RUNFLIX Movie API — newest first.</p>
         </div>
 
         <div class="filter-bar">
@@ -166,7 +143,7 @@
         };
 
         // Detect the base path so the fetch works both directly (localhost:3000)
-        // and through the Replit proxy (/zahid-api/changelog → base = /zahid-api)
+        // and through the Replit proxy (/runflix-api/changelog → base = /runflix-api)
         const BASE = window.location.pathname.replace(/\/changelog.*$/, '');
 
         async function tryFetch(url) {
