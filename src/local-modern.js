@@ -4,6 +4,7 @@ import { modernRoute,json,secretEqual } from './router.js';
 import { open } from './tickets.js';
 import { fetchMedia } from './media-relay.js';
 import { createOutboundFetch } from './outbound.js';
+import { publicOrigin } from './public-url.js';
 
 const outbound=createOutboundFetch();
 const engine=new MovieBox(outbound);
@@ -36,10 +37,7 @@ export function installModern(app) {
                 req.path.startsWith('/debug/') || req.path.startsWith('/try-') ||
                 req.path.startsWith('/sample-') || req.path.startsWith('/internal/')
             )) return send(json({message:'Endpoint not available'},404),res);
-            const protocol=req.headers['x-forwarded-proto']?.split(',')[0] || req.protocol;
-            const forwardedHost=String(req.headers['x-forwarded-host']||'').split(',')[0].trim();
-            const safeForwardedHost=/^[a-z0-9.-]+(?::[0-9]{1,5})?$/i.test(forwardedHost)?forwardedHost:req.get('host');
-            const url=`${protocol}://${safeForwardedHost}${req.originalUrl}`;
+            const url=`${publicOrigin(req)}${req.originalUrl}`;
             const request=new Request(url,{method:req.method,headers:req.headers,
                 ...(!['GET','HEAD'].includes(req.method)?{body:JSON.stringify(req.body||{})}:{})});
             const runtime={
