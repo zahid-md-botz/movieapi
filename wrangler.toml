@@ -5,7 +5,7 @@ compatibility_flags = ["nodejs_compat"]
 account_id = "8979e94775109424eb5e1b66c665e561"
 
 [vars]
-ENGINE_RELAY_URL = "https://movieapi-production-59c04909.up.railway.app"
+ENGINE_RELAY_URL = "https://YOUR-RAILWAY-SERVICE.up.railway.app"
 
 [observability]
 enabled = true
