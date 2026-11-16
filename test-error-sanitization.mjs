@@ -5,7 +5,7 @@ import { json } from "./src/router.js";
 test("upstream errors hide internal relay details", async () => {
   const response = json({
     code: "UPSTREAM_ERROR",
-    message: "MovieBox Railway relay failed",
+    message: "MovieBox upstream relay failed",
     upstreamStatus: 403,
   }, 502);
   const body = await response.json();
@@ -16,7 +16,7 @@ test("upstream errors hide internal relay details", async () => {
   assert.equal(body.message, "Movie data is temporarily unavailable. Please try again shortly.");
   assert.equal(body.error, body.message);
   assert.equal("upstreamStatus" in body, false);
-  assert.doesNotMatch(serialized, /Railway|relay|403/);
+  assert.doesNotMatch(serialized, /relay|403/);
 });
 
 test("key-store outages keep their actionable explanation", async () => {
