@@ -8,7 +8,7 @@ function services(env) {
     const relayUrl=String(env.ENGINE_RELAY_URL||'').replace(/\/+$/,'');
     const relaySecret=env.RELAY_SECRET||env.MOVIE_RELAY_SECRET;
     return {
-        ...env, STORAGE_LABEL:'durable-sqlite',
+        ...env, STORAGE_LABEL:'durable-sqlite', CONTENT_ON_RAILWAY:true,
         ledger:async data=>{
             const response=await stub.fetch('https://ledger.internal/',{method:'POST',body:JSON.stringify(data)});
             return response.json();
@@ -30,11 +30,19 @@ function services(env) {
             }
             return data?.results;
         },
-        media:async(target,headers,range,method)=>{
+        manga:async(request)=>{
+            if(!relayUrl||!relaySecret) throw Object.assign(new Error('Railway relay is not configured'),{status:503});
+            const url=new URL(request.url),query={};
+            for(const name of new Set(url.searchParams.keys())) query[name]=url.searchParams.getAll(name);
+            return fetch(relayUrl+'/internal/manga',{method:'POST',
+                headers:{'Content-Type':'application/json','x-relay-secret':relaySecret},
+                body:JSON.stringify({path:url.pathname,query}),signal:AbortSignal.timeout(240000)});
+        },
+        media:async(target,headers,range,method,ifRange)=>{
             if(!relayUrl||!relaySecret) throw Object.assign(new Error('MovieBox Railway relay is not configured'),{status:503});
             const ticket=seal({url:target,headers,exp:Date.now()+120000},relaySecret);
             return fetch(relayUrl+'/internal/moviebox-media',{method:'POST',
-                headers:{'Content-Type':'application/json','x-relay-secret':relaySecret,...(range?{Range:range}:{})},
+                headers:{'Content-Type':'application/json','x-relay-secret':relaySecret,...(range?{Range:range}:{}),...(ifRange?{'If-Range':ifRange}:{})},
                 body:JSON.stringify({ticket,method})});
         }
     };
@@ -49,11 +57,14 @@ export default {
         }
         const response=await modernRoute(request,runtime);
         if(response) return response;
-        // Manga is the only legacy API provider; auth/quota is already enforced.
+        // Authentication/quota remain at the edge; all manga processing runs in Python.
         if(url.pathname.startsWith('/api/v3/manga')) {
-            const r=await legacy.fetch(request,env,ctx);
-            const h=new Headers(r.headers);h.set('Access-Control-Allow-Origin','*');h.set('Cache-Control','no-store');
-            return new Response(r.body,{status:r.status,headers:h});
+            try {
+                const r=await runtime.manga(request);
+                const h=new Headers(r.headers);h.set('Access-Control-Allow-Origin','*');h.set('Cache-Control','no-store');
+                h.set('Access-Control-Expose-Headers','Content-Disposition,Content-Length');
+                return new Response(r.body,{status:r.status,headers:h});
+            } catch {return json({message:'Manga provider is temporarily unavailable'},502);}
         }
         return legacy.fetch(request,env,ctx);
     }
