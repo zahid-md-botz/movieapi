@@ -51,9 +51,25 @@ async function sendRequestEmail({ name, email, website, useCase }) {
 app.use((req, res, next) => {
     res.setHeader("Access-Control-Allow-Origin", "*");
     res.setHeader("Access-Control-Allow-Methods", "GET, HEAD, POST, PUT, DELETE, OPTIONS");
-    res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization, Range");
-    res.setHeader("Access-Control-Expose-Headers", "Content-Length, Content-Range");
+    res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization, X-API-Key, apikey, api-key, Range, If-Range");
+    res.setHeader("Access-Control-Expose-Headers", "Content-Length, Content-Range, Accept-Ranges, Content-Disposition");
     if (req.method === "OPTIONS") return res.sendStatus(204);
+    next();
+});
+
+// When configured, Railway accepts public traffic only from the Cloudflare
+// Worker. Keep the Railway health endpoint available to Railway's healthcheck.
+const edgeSecret = process.env.EDGE_SHARED_SECRET || '';
+function safeSecretEqual(a, b) {
+    if (!a || !b) return false;
+    const x = Buffer.from(String(a)), y = Buffer.from(String(b));
+    return x.length === y.length && crypto.timingSafeEqual(x, y);
+}
+app.use((req, res, next) => {
+    if (!edgeSecret || req.path === '/api/v3/health') return next();
+    if (!safeSecretEqual(req.headers['x-edge-secret'], edgeSecret)) {
+        return res.status(403).json({ status: 403, success: false, creator: 'Zahid dev', code: 'EDGE_ONLY', message: 'Use the official API domain.' });
+    }
     next();
 });
 
