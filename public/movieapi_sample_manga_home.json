@@ -178,10 +178,10 @@
     "version": "v1.1.0",
     "date": "2026-05-20",
     "type": "feature",
-    "title": "Cloudflare Worker relay + v3 signed requests",
-    "description": "Added a Cloudflare Worker relay layer to bypass upstream geo-blocking.",
+    "title": "Railway-ready Node.js API + v3 signed requests",
+    "description": "Updated the API request and source handling for the standalone Node.js deployment.",
     "changes": [
-      "CF Worker relay deployed — routes geo-blocked requests through Cloudflare edge",
+      "Node.js API runs directly on the selected hosting platform",
       "V3 request signing implemented for relay authentication",
       "Improved resilience via mirror host rotation"
     ]
@@ -192,7 +192,7 @@
     "date": "2026-05-01",
     "type": "feature",
     "title": "Initial API release",
-    "description": "RUNFLIX Movie API launched with core endpoints for homepage, trending, search, filter, info, sources, and captions.",
+    "description": "ZAHID MOVIE API Movie API launched with core endpoints for homepage, trending, search, filter, info, sources, and captions.",
     "changes": [
       "GET /api/v3/homepage — homepage sections by tab",
       "GET /api/v3/trending — trending movies and series",
