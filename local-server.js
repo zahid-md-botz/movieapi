@@ -8,6 +8,7 @@ import crypto from "crypto";
 import axios from "axios";
 import * as cheerio from "cheerio";
 import { installModern } from './src/local-modern.js';
+import { publicOrigin } from './src/public-url.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const app = express();
@@ -1494,7 +1495,7 @@ app.get("/api/v3/anime/sources/:id", async (req, res) => {
         const videoList = resourceData?.list || [];
         if (videoList.length === 0) return err(res, "No video sources found for this anime title", 404);
 
-        const baseUrl = `${req.headers['x-forwarded-proto']?.split(',')[0] || req.protocol}://${req.get('host')}`;
+        const baseUrl = publicOrigin(req);
 
         const rawSources = videoList.map(f => {
             const label = normaliseQualityLabel(f.resolution);
@@ -1590,7 +1591,7 @@ app.get("/api/v3/sources/:id", async (req, res) => {
         const videoList = v3ResourceData?.list || [];
 
         if (videoList.length > 0) {
-            const baseUrl = `${req.headers['x-forwarded-proto']?.split(',')[0] || req.protocol}://${req.get('host')}`;
+            const baseUrl = publicOrigin(req);
 
             const rawSources = videoList.map(f => {
                 const label = normaliseQualityLabel(f.resolution);
