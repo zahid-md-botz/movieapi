@@ -1,0 +1,146 @@
+{
+  "status": 200,
+  "success": true,
+  "creator": "DaraTech",
+  "results": {
+    "schedule": [
+      {
+        "date": "2026-06-15",
+        "count": 3,
+        "items": [
+          {
+            "id": 176496,
+            "title": "Demon Slayer: Kimetsu no Yaiba",
+            "titleRomaji": "Kimetsu no Yaiba",
+            "titleNative": "鬼滅の刃",
+            "episode": 14,
+            "airingAt": 1750003200,
+            "airingDate": "2026-06-15T14:00:00.000Z",
+            "thumbnail": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx101922-PEn1CTc93blC.jpg",
+            "genres": ["Action", "Adventure", "Fantasy"],
+            "rating": 8.7,
+            "status": "RELEASING",
+            "format": "TV",
+            "totalEpisodes": 26,
+            "season": "SPRING",
+            "year": 2026,
+            "description": "Tanjiro and his allies continue the battle in the Infinity Castle arc.",
+            "url": "https://anilist.co/anime/101922",
+            "streamLinks": [
+              { "site": "Crunchyroll", "url": "https://www.crunchyroll.com/demon-slayer-kimetsu-no-yaiba" },
+              { "site": "Netflix", "url": "https://www.netflix.com/title/81091393" }
+            ],
+            "source": "anilist"
+          },
+          {
+            "id": 154587,
+            "title": "Solo Leveling Season 2",
+            "titleRomaji": "Ore dake Level Up na Ken Season 2",
+            "titleNative": "俺だけレベルアップな件 Season 2",
+            "episode": 9,
+            "airingAt": 1750010400,
+            "airingDate": "2026-06-15T16:00:00.000Z",
+            "thumbnail": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx166531-bCkMcKCaC0hE.jpg",
+            "genres": ["Action", "Adventure", "Fantasy"],
+            "rating": 8.4,
+            "status": "RELEASING",
+            "format": "TV",
+            "totalEpisodes": 13,
+            "season": "SPRING",
+            "year": 2026,
+            "description": "Sung Jin-Woo continues to level up as humanity's greatest threat looms.",
+            "url": "https://anilist.co/anime/166531",
+            "streamLinks": [
+              { "site": "Crunchyroll", "url": "https://www.crunchyroll.com/solo-leveling" }
+            ],
+            "source": "anilist"
+          },
+          {
+            "id": 171019,
+            "title": "One Piece",
+            "titleRomaji": "One Piece",
+            "titleNative": "ワンピース",
+            "episode": 1126,
+            "airingAt": 1750021200,
+            "airingDate": "2026-06-15T19:00:00.000Z",
+            "thumbnail": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx21-YCX2fjRjBeG.jpg",
+            "genres": ["Action", "Adventure", "Comedy"],
+            "rating": 8.8,
+            "status": "RELEASING",
+            "format": "TV",
+            "totalEpisodes": null,
+            "season": "SPRING",
+            "year": 2026,
+            "description": "Monkey D. Luffy's adventures continue on the Grand Line.",
+            "url": "https://anilist.co/anime/21",
+            "streamLinks": [
+              { "site": "Crunchyroll", "url": "https://www.crunchyroll.com/one-piece" },
+              { "site": "Netflix", "url": "https://www.netflix.com/title/80107103" }
+            ],
+            "source": "anilist"
+          }
+        ]
+      },
+      {
+        "date": "2026-06-16",
+        "count": 2,
+        "items": [
+          {
+            "id": 163134,
+            "title": "Attack on Titan: The Final Chapters",
+            "titleRomaji": "Shingeki no Kyojin: The Final Season",
+            "titleNative": "進撃の巨人 The Final Season",
+            "episode": 3,
+            "airingAt": 1750089600,
+            "airingDate": "2026-06-16T12:00:00.000Z",
+            "thumbnail": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx131681-dGxfeiS5V5hX.jpg",
+            "genres": ["Action", "Drama", "Fantasy"],
+            "rating": 9.0,
+            "status": "RELEASING",
+            "format": "SPECIAL",
+            "totalEpisodes": 4,
+            "season": "SPRING",
+            "year": 2026,
+            "description": "The final confrontation between Eren and the Survey Corps.",
+            "url": "https://anilist.co/anime/131681",
+            "streamLinks": [
+              { "site": "Crunchyroll", "url": "https://www.crunchyroll.com/attack-on-titan" }
+            ],
+            "source": "anilist"
+          },
+          {
+            "id": 170710,
+            "title": "Jujutsu Kaisen Season 3",
+            "titleRomaji": "Jujutsu Kaisen 3rd Season",
+            "titleNative": "呪術廻戦 3期",
+            "episode": 11,
+            "airingAt": 1750096800,
+            "airingDate": "2026-06-16T14:00:00.000Z",
+            "thumbnail": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx145064-xi8jGCKBtdxO.jpg",
+            "genres": ["Action", "Fantasy", "School"],
+            "rating": 8.6,
+            "status": "RELEASING",
+            "format": "TV",
+            "totalEpisodes": 21,
+            "season": "SPRING",
+            "year": 2026,
+            "description": "The Culling Game arc reaches its climax.",
+            "url": "https://anilist.co/anime/145064",
+            "streamLinks": [
+              { "site": "Crunchyroll", "url": "https://www.crunchyroll.com/jujutsu-kaisen" }
+            ],
+            "source": "anilist"
+          }
+        ]
+      }
+    ],
+    "totalEpisodes": 5,
+    "dateRange": {
+      "from": "2026-06-15",
+      "to": "2026-06-16"
+    },
+    "period": "daily",
+    "genre": "anime",
+    "source": "anilist"
+  }
+}
