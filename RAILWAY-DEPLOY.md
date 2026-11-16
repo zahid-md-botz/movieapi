@@ -16,7 +16,7 @@ One Railway service runs the website, API, MovieBox metadata engine, SQLite key/
 4. Attach a Railway Volume mounted at `/app/.data`. It stores API keys, quotas and playback sessions.
 5. Keep one replica for the SQLite volume setup, deploy, and retain the existing Railway domain.
 
-No separate Python service or `MOVIEBOX_PROXY_URL` is required. The Python media relay runs inside this Railway container. Deploy the Cloudflare gateway by following `CLOUDFLARE-DEPLOY.md`. The Python media relay runs inside the same Railway container and listens only on `127.0.0.1:8765`.
+Set `PUBLIC_BASE_URL` to your Cloudflare Worker HTTPS origin (currently `https://movieapi.ideapaid911.workers.dev`); generated playback and download links will use this public origin, never the Railway hostname. Update it if you later attach a custom domain. No separate Python service or `MOVIEBOX_PROXY_URL` is required. The Python media relay runs inside this Railway container. Deploy the Cloudflare gateway by following `CLOUDFLARE-DEPLOY.md`. The Python media relay runs inside the same Railway container and listens only on `127.0.0.1:8765`.
 
 ## Download and streaming endpoints
 
