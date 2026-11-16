@@ -25,3 +25,6 @@ venv/
 .DS_Store
 .vscode/
 .idea/
+
+.dev.vars
+wrangler.local.toml
