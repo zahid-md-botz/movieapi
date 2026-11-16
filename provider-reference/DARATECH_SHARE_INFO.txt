@@ -1,0 +1,8 @@
+DaraTech Share Resource Package
+Resource: Moviebox Scrapper and Stream Proxy
+Version: 1.0.0
+Author/Brand: DaraTech — UnknownOfRun
+Platform: https://daratech.org
+Downloaded: 2026-11-13T10:50:33.095Z
+
+Thank you for utilizing DaraTech Share!
