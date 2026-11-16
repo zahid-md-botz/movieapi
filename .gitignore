@@ -1,10 +1,30 @@
 node_modules/
+dist/
+build/
+
+# Secrets, local databases and runtime state
 .env
 .env.*
-.dev.vars
-.dev.vars.*
+!.env.example
 .data/
+*.sqlite
+*.sqlite-shm
+*.sqlite-wal
+*.log
+
+# Wrangler/emulator leftovers from development — never deploy these
 .wrangler/
+
+# Python cache / virtualenv leftovers
 __pycache__/
-*.pyc
-dist/
+*.py[cod]
+.venv/
+venv/
+
+# Editor/OS files
+.DS_Store
+.vscode/
+.idea/
+
+.dev.vars
+wrangler.local.toml
