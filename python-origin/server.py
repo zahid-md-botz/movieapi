@@ -19,6 +19,8 @@ from starlette.concurrency import run_in_threadpool
 
 from curl_transport import CurlStreamClient, MAX_STREAMS
 from engine import BOOTSTRAP_HOST, NATIVE_API_BASE, WEB_USER_AGENT, MovieBoxEngine
+import manga
+import content
 
 
 RELAY_SECRET = os.environ.get("RELAY_SECRET", "")
@@ -56,7 +58,7 @@ _media_response_headers = {
     "last-modified",
 }
 _header_name = re.compile(r"^[!#$%&'*+\-.^_`|~0-9A-Za-z]+$")
-_range_value = re.compile(r"^bytes=\d*-\d*$")
+_range_value = re.compile(r"^bytes=(?:\d+-\d*|-\d+)$")
 _web_hosts = ("https://h5-api.aoneroom.com",)
 _web_headers = {
     "Accept": "application/json",
@@ -472,6 +474,14 @@ class MovieBoxService:
         return result
 
     def call(self, action, params):
+        if action == "catalog-query":
+            path, query = params.get("path"), params.get("query", {})
+            if not isinstance(path, str) or not path.startswith("/api/v3/") or not isinstance(query, dict):
+                raise OriginError("Invalid catalog request", 400)
+            try:
+                return content.dispatch(self, path, query)
+            except content.ContentError as error:
+                raise OriginError(str(error), error.status) from None
         subject_id = str(params.get("id") or "")
         if action == "home":
             return self.web("/home", params={"host": "movieboxhd.net"}, bootstrap=False)
@@ -486,6 +496,10 @@ class MovieBoxService:
                     "/subject/search",
                     body={"keyword": query, "page": page, "perPage": per_page},
                 )
+                if not isinstance(data, dict) or not (data.get("items") or data.get("list")):
+                    # Some web regions return an empty success for every query.
+                    # Verify with the supplied native engine, never substitute unrelated titles.
+                    raise OriginError("Web search returned no matches", 502)
             except OriginError:
                 fallback_items = self.api.search(query, page, per_page)
                 return {
@@ -735,6 +749,7 @@ class MovieBoxService:
 
 service = MovieBoxService(engine)
 _actions = {
+    "catalog-query",
     "home",
     "search",
     "info",
@@ -760,10 +775,13 @@ async def authenticate_and_limit(request: Request, call_next):
             return _response_error("Invalid request", 400)
         if declared_length > 32 * 1024:
             return _response_error("Request body is too large", 413)
-        body = await request.body()
-        if len(body) > 32 * 1024:
-            return _response_error("Request body is too large", 413)
-        request._body = body
+        chunks, size = [], 0
+        async for chunk in request.stream():
+            size += len(chunk)
+            if size > 32 * 1024:
+                return _response_error("Request body is too large", 413)
+            chunks.append(chunk)
+        request._body = b"".join(chunks)
     return await call_next(request)
 
 
@@ -794,6 +812,37 @@ async def moviebox(request: Request):
     except Exception:
         # Avoid logging or returning signed URLs, cookies, or upstream credentials.
         return _response_error("Movie data is temporarily unavailable. Please try again shortly.", 502)
+
+
+@app.post("/internal/manga")
+async def manga_route(request: Request):
+    try:
+        payload = await request.json()
+        path, query = payload.get("path", ""), payload.get("query", {})
+        if not isinstance(path, str) or not path.startswith("/api/v3/manga/") or not isinstance(query, dict):
+            return _response_error("Invalid manga request", 400)
+        if any(not isinstance(v, list) or any(not isinstance(x, str) for x in v) for v in query.values()):
+            return _response_error("Invalid manga parameters", 400)
+        result = await run_in_threadpool(manga.dispatch, path, query)
+        if isinstance(result, tuple):
+            file, filename = result
+            def chunks():
+                try:
+                    while chunk := file.read(65536):
+                        yield chunk
+                finally:
+                    file.close()
+            return StreamingResponse(chunks(), media_type="application/zip",
+                headers={"Content-Disposition": f'attachment; filename="{filename}"'},
+                background=BackgroundTask(file.close))
+        return JSONResponse({"status": 200, "success": True, "creator": "DaraTech", "results": result})
+    except manga.MangaError as error:
+        return JSONResponse({"status": error.status, "success": False, "creator": "DaraTech",
+                             "message": str(error)}, status_code=error.status)
+    except (ValueError, AttributeError, TypeError):
+        return _response_error("Invalid manga request", 400)
+    except Exception:
+        return _response_error("Manga provider is temporarily unavailable", 502)
 
 
 def _start_media(url, headers, range_value, method, if_range_value=None):
