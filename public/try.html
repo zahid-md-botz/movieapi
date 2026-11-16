@@ -3,20 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ZAHID MOVIE API | Live API Playground</title>
-    <meta name="description" content="Test the real Zahid dev MovieAPI instantly. Search MovieBox movies and series, inspect API results, and check your daily and monthly API-key limits.">
+    <title>DaraTech MovieAPI Try It | Live API Playground</title>
+    <meta name="description" content="Test the real DaraTech MovieAPI instantly. Search MovieBox movies and series, inspect API results, and check your daily and monthly API-key limits.">
     <meta name="robots" content="index,follow,max-image-preview:large">
     <meta name="theme-color" content="#050508">
-    <link rel="canonical" href="https://YOUR-RAILWAY-DOMAIN.up.railway.app/try">
+    <link rel="canonical" href="https://movieapi.runflix.name.ng/try">
     <meta property="og:type" content="website">
-    <meta property="og:site_name" content="Zahid dev MovieAPI">
-    <meta property="og:title" content="Try Zahid dev MovieAPI | Live Search Playground">
+    <meta property="og:site_name" content="DaraTech MovieAPI">
+    <meta property="og:title" content="Try DaraTech MovieAPI | Live Search Playground">
     <meta property="og:description" content="Try the live MovieBox search endpoint with the free key or your own API key.">
-    <meta property="og:url" content="https://YOUR-RAILWAY-DOMAIN.up.railway.app/try">
+    <meta property="og:url" content="https://movieapi.runflix.name.ng/try">
     <meta name="twitter:card" content="summary">
-    <meta name="twitter:title" content="Try Zahid dev MovieAPI">
+    <meta name="twitter:title" content="Try DaraTech MovieAPI">
     <meta name="twitter:description" content="Run a real MovieBox API search online.">
-    <link rel="icon" type="image/x-icon" href="/favicon.svg">
+    <link rel="icon" type="image/x-icon" href="https://runflix.name.ng/favicon.png">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -63,29 +63,6 @@
         .result-item-type { font-size: 10px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; padding: 2px 6px; border-radius: 4px; }
         .type-movie { background: rgba(34,211,238,0.08); color: #22d3ee; border: 1px solid rgba(34,211,238,0.15); }
         .type-series { background: rgba(139,92,246,0.08); color: #a78bfa; border: 1px solid rgba(139,92,246,0.15); }
-
-        /* Smooth motion polish: subtle, fast, and respectful of reduced-motion. */
-        :root { scroll-behavior: smooth; }
-        body { animation: page-enter .42s cubic-bezier(.22,1,.36,1) both; }
-        main > section, main > div { animation: content-rise .55s cubic-bezier(.22,1,.36,1) both; }
-        main > section:nth-child(2), main > div:nth-child(2) { animation-delay: .06s; }
-        main > section:nth-child(3), main > div:nth-child(3) { animation-delay: .12s; }
-        main > section:nth-child(4), main > div:nth-child(4) { animation-delay: .18s; }
-        a, button, input, select, textarea, .nav-link, .btn, .btn-primary, .btn-ghost, .btn-email {
-            transition: transform .22s cubic-bezier(.22,1,.36,1), color .22s ease,
-                        background-color .22s ease, border-color .22s ease, box-shadow .22s ease;
-        }
-        .btn:hover, .btn-primary:hover, .btn-ghost:hover, .btn-email:hover,
-        button:not(:disabled):hover { transform: translateY(-2px); }
-        .nav-link:hover { transform: translateX(2px); }
-        .endpoint-card, .stat-card, .glass, .card { transition: transform .28s cubic-bezier(.22,1,.36,1), box-shadow .28s ease, border-color .28s ease; }
-        .endpoint-card:hover, .stat-card:hover, .glass:hover, .card:hover { transform: translateY(-3px); box-shadow: 0 14px 36px rgba(0,0,0,.18); }
-        @keyframes page-enter { from { opacity: 0; } to { opacity: 1; } }
-        @keyframes content-rise { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        @media (prefers-reduced-motion: reduce) {
-            :root { scroll-behavior: auto; }
-            *, *::before, *::after { animation-duration: .001ms !important; animation-iteration-count: 1 !important; transition-duration: .001ms !important; scroll-behavior: auto !important; }
-        }
     </style>
 </head>
 <body class="min-h-screen">
@@ -100,7 +77,7 @@
                     <i class="fas fa-play text-white text-xs"></i>
                 </div>
                 <div>
-                    <span class="font-bold text-sm tracking-tight text-white">ZAHID MOVIE API</span>
+                    <span class="font-bold text-sm tracking-tight text-white">RUNFLIX</span>
                     <span class="text-slate-500 text-xs ml-1 font-mono">API</span>
                 </div>
             </a>
@@ -136,7 +113,7 @@
                 <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-violet-400">with a real request</span>
             </h1>
             <p class="text-slate-400 text-base max-w-xl leading-relaxed">
-                Every search here calls the real <code class="font-mono text-cyan-400 text-sm">GET /api/v3/search/:query</code> endpoint with the shared public key <code class="font-mono text-cyan-400 text-sm">zahidmovieapi</code>, or your own key if you add one. Limits below are read live from the server.
+                Every search here calls the real <code class="font-mono text-cyan-400 text-sm">GET /api/v3/search/:query</code> endpoint with the shared public key <code class="font-mono text-cyan-400 text-sm">daratechapi</code>, or your own key if you add one. Limits below are read live from the server.
                 <a href="/docs#endpoints" class="text-cyan-400 hover:text-cyan-300 underline underline-offset-2">Run every other endpoint in the docs</a>.
             </p>
         </section>
@@ -146,7 +123,7 @@
             <label for="keyInput" class="mono-label text-cyan-400">Your API key <span class="text-slate-500">(optional)</span></label>
             <p class="text-xs text-slate-500 mb-3"><a id="keyContactLink" href="/request-key" class="text-emerald-400">Request your own key</a>.</p>
             <div class="flex flex-col sm:flex-row gap-2 mt-2">
-                <input id="keyInput" type="password" autocomplete="off" spellcheck="false" placeholder="Paste your own key, or leave blank for zahidmovieapi" class="flex-1 min-w-0 bg-surface border border-edge rounded-lg px-3 py-2.5 text-sm text-white font-mono placeholder-slate-500 outline-none focus:border-cyan-500/40">
+                <input id="keyInput" type="password" autocomplete="off" spellcheck="false" placeholder="Paste your own key, or leave blank for daratechapi" class="flex-1 min-w-0 bg-surface border border-edge rounded-lg px-3 py-2.5 text-sm text-white font-mono placeholder-slate-500 outline-none focus:border-cyan-500/40">
                 <div class="grid grid-cols-2 gap-2 sm:flex">
                     <button type="button" id="saveKey" class="btn-primary px-4 py-2.5 rounded-lg font-semibold text-sm text-white inline-flex items-center justify-center gap-2"><i class="fas fa-save text-xs"></i>Save</button>
                     <button type="button" id="clearKey" class="px-4 py-2.5 rounded-lg font-semibold text-sm text-slate-300 border border-edge hover:border-cyan-500/30 hover:text-cyan-400 transition-all inline-flex items-center justify-center gap-2"><i class="fas fa-undo text-xs"></i>Use public</button>
@@ -227,7 +204,7 @@
                     <i class="fas fa-search text-2xl"></i>
                 </div>
                 <h3 class="text-lg font-bold text-white mb-2">Search the catalog</h3>
-                <p class="text-slate-500 text-sm max-w-sm mx-auto">Type a title above and press Search to see live results from the ZAHID MOVIE API. Each search counts as one request against the active key.</p>
+                <p class="text-slate-500 text-sm max-w-sm mx-auto">Type a title above and press Search to see live results from the RUNFLIX API. Each search counts as one request against the active key.</p>
             </div>
         </section>
 
@@ -292,7 +269,7 @@
     </main>
 
     <script>
-        const PUBLIC_KEY = 'zahidmovieapi', LS = 'zahid_movieapi_key', PER_PAGE = 20;
+        const PUBLIC_KEY = 'daratechapi', LS = 'runflix_movieapi_key', PER_PAGE = 20;
         let lastQuery = '', page = 1, busy = false;
         const $id = id => document.getElementById(id);
         const userKey = () => { try { return localStorage.getItem(LS) || ''; } catch { return ''; } };
@@ -335,8 +312,8 @@
         function paintKey() {
             const k = activeKey()===PUBLIC_KEY?'':userKey();
             const personal=activeKey()!==PUBLIC_KEY;
-            const href=personal?'mailto:myweb615265@gmail.com?subject=Movie%20Api%20key%20support':'/request-key';
-            const label=personal?'Email support':'Request your own key';
+            const href=personal?'https://wa.me/2348100785677?text=Please%20help%20me%20upgrade%20my%20RUNFLIX%20MovieAPI%20key.':'/request-key';
+            const label=personal?'Upgrade on WhatsApp':'Request your own key';
             for(const id of ['keyContactLink','quotaAction']) {
                 const a=$id(id);a.href=href;a.target=personal?'_blank':'_self';a.rel='noopener';
             }
