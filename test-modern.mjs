@@ -11,9 +11,9 @@ function store() {
     return new KeyStore(sql);
 }
 test('free key is seeded once; deleted free key stays deleted',()=>{
-    const s=store();assert.equal(s.get('daratechapi').limits.daily,50);
-    assert.equal(s.delete('daratechapi'),true);assert.equal(s.get('daratechapi'),null);
-    new KeyStore(s.sql);assert.equal(s.get('daratechapi'),null);
+    const s=store();assert.equal(s.get('zahidmovieapi').limits.daily,50);
+    assert.equal(s.delete('zahidmovieapi'),true);assert.equal(s.get('zahidmovieapi'),null);
+    new KeyStore(s.sql);assert.equal(s.get('zahidmovieapi'),null);
 });
 test('daily quota is exact, checker does not consume, editing works',()=>{
     const s=store();s.create({key:'daily-test',limits:{daily:2}});
@@ -71,7 +71,7 @@ test('tickets are authenticated, expire and cannot make an open proxy',()=>{
 test('API quotas cannot be bypassed with Origin and retired routes return 410',async()=>{
     const s=store();s.create({key:'blocked',limits:{daily:0}});
     const env={ADMIN_SECRET:'test-secret',STORAGE_LABEL:'test',ledger:async data=>s.dispatch(data),engine:async()=>({})};
-    const req=new Request('https://example.com/api/v3/homepage',{headers:{Authorization:'Bearer blocked',Origin:'https://runflix.name.ng'}});
+    const req=new Request('https://example.com/api/v3/homepage',{headers:{Authorization:'Bearer blocked',Origin:'https://YOUR-RAILWAY-DOMAIN.up.railway.app'}});
     assert.equal((await modernRoute(req,env)).status,429);
     for(const route of ['live','live/categories','schedule','schedule/popular','seasons/upcoming'])
         assert.equal((await modernRoute(new Request('https://example.com/api/v3/'+route),env)).status,410);
@@ -99,4 +99,26 @@ test('HLS segment ranges and downloads preserve actual bytes and format',async()
     assert.match(r.headers.get('content-disposition'),/\.ts"/);
     assert.match(r.headers.get('access-control-expose-headers'),/Content-Disposition/);
     assert.deepEqual(new Uint8Array(await r.arrayBuffer()),bytes);
+});
+
+test('legacy url download links are proxied safely instead of redirected or rejected',async()=>{
+    const bytes=Uint8Array.from([0,1,2,3]);
+    const env={ADMIN_SECRET:'test-secret',ledger:async()=>({status:200}),media:async(target,headers,range,method)=>{
+        assert.equal(target,'https://bcdn.hakunaymatata.com/legacy.mp4');
+        assert.deepEqual(headers,{});
+        assert.equal(method,'GET');
+        return new Response(bytes,{status:200,headers:{'content-type':'video/mp4','content-length':String(bytes.length)}});
+    }};
+    const url=encodeURIComponent('https://bcdn.hakunaymatata.com/legacy.mp4');
+    const r=await modernRoute(new Request(`https://example.com/api/v3/download?url=${url}&quality=720p`),env);
+    assert.equal(r.status,200);
+    assert.match(r.headers.get('content-disposition'),/^attachment/);
+    assert.match(r.headers.get('content-disposition'),/\.mp4/);
+    assert.deepEqual(new Uint8Array(await r.arrayBuffer()),bytes);
+});
+
+test('legacy media links cannot proxy an unapproved host',async()=>{
+    const env={ADMIN_SECRET:'test-secret',ledger:async()=>({status:200}),media:async()=>{throw new Error('must not fetch');}};
+    const r=await modernRoute(new Request('https://example.com/api/v3/download?url='+encodeURIComponent('https://127.0.0.1/private.mp4')),env);
+    assert.equal(r.status,400);
 });
