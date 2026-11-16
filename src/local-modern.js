@@ -37,7 +37,9 @@ export function installModern(app) {
                 req.path.startsWith('/sample-') || req.path.startsWith('/internal/')
             )) return send(json({message:'Endpoint not available'},404),res);
             const protocol=req.headers['x-forwarded-proto']?.split(',')[0] || req.protocol;
-            const url=`${protocol}://${req.get('host')}${req.originalUrl}`;
+            const forwardedHost=String(req.headers['x-forwarded-host']||'').split(',')[0].trim();
+            const safeForwardedHost=/^[a-z0-9.-]+(?::[0-9]{1,5})?$/i.test(forwardedHost)?forwardedHost:req.get('host');
+            const url=`${protocol}://${safeForwardedHost}${req.originalUrl}`;
             const request=new Request(url,{method:req.method,headers:req.headers,
                 ...(!['GET','HEAD'].includes(req.method)?{body:JSON.stringify(req.body||{})}:{})});
             const runtime={
