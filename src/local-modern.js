@@ -1,12 +1,14 @@
 import { Readable } from 'node:stream';
 import { MovieBox } from './moviebox.js';
 import { modernRoute,json,secretEqual } from './router.js';
-import { open,fetchMedia } from './tickets.js';
+import { open } from './tickets.js';
+import { fetchMedia } from './media-relay.js';
 import { createOutboundFetch } from './outbound.js';
+import { publicOrigin } from './public-url.js';
 
 const outbound=createOutboundFetch();
 const engine=new MovieBox(outbound);
-const media=(url,headers,range,method)=>fetchMedia(url,headers,range,method,outbound);
+const media=(url,headers,range,method,ifRange)=>fetchMedia(url,headers,range,method,outbound,ifRange);
 const callEngine=(action,params)=>engine.call(action,params);
 async function send(response,res) {
     res.status(response.status);
@@ -29,34 +31,27 @@ export function installModern(app) {
                     return send(json({results}),res);
                 }
                 const data=open(req.body.ticket,process.env.ADMIN_SECRET);
-                return send(await media(data.url,data.headers,req.headers.range,req.body.method==='HEAD'?'HEAD':'GET'),res);
+                return send(await media(data.url,data.headers,req.headers.range,req.body.method==='HEAD'?'HEAD':'GET',req.headers['if-range']),res);
             }
             if(process.env.NODE_ENV==='production' && (
                 req.path.startsWith('/debug/') || req.path.startsWith('/try-') ||
                 req.path.startsWith('/sample-') || req.path.startsWith('/internal/')
             )) return send(json({message:'Endpoint not available'},404),res);
-            const protocol=req.headers['x-forwarded-proto']?.split(',')[0] || req.protocol;
-            const url=`${protocol}://${req.get('host')}${req.originalUrl}`;
+            const url=`${publicOrigin(req)}${req.originalUrl}`;
             const request=new Request(url,{method:req.method,headers:req.headers,
                 ...(!['GET','HEAD'].includes(req.method)?{body:JSON.stringify(req.body||{})}:{})});
             const runtime={
                 ADMIN_SECRET:process.env.ADMIN_SECRET,
-                STORAGE_LABEL:process.env.KEY_LEDGER_URL?'durable-sqlite':'local-sqlite',
+                STORAGE_LABEL:'railway-volume-sqlite',
                 ledger:async data=>{
-                    if(process.env.KEY_LEDGER_URL) {
-                        const r=await fetch(process.env.KEY_LEDGER_URL+'/internal/ledger',{method:'POST',
-                            headers:{'Content-Type':'application/json','x-relay-secret':process.env.ADMIN_SECRET},
-                            body:JSON.stringify(data),signal:AbortSignal.timeout(15000)});
-                        if(r.status>=500)throw new Error('Quota storage unavailable; requests are blocked to protect limits');
-                        return r.json();
-                    }
-                    if(process.env.NODE_ENV==='production') throw new Error('Persistent quota storage is not configured');
-                    try{
+                    try {
                         const {localLedger}=await import('./local-ledger.js');
                         return localLedger.dispatch(data);
+                    } catch(e) {
+                        console.error('[key-ledger] SQLite operation failed:', e.message);
+                        return {status:e.status||503,code:e.code||'KEY_STORE_UNAVAILABLE',
+                            message:e.status?e.message:'Persistent key storage is temporarily unavailable'};
                     }
-                    catch(e){return {status:e.status||503,code:e.code||'KEY_STORE_UNAVAILABLE',
-                        message:e.status?e.message:'Persistent key storage is temporarily unavailable'};}
                 },
                 engine:callEngine,
                 media
