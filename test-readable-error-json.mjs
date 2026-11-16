@@ -31,7 +31,7 @@ test('all error responses are indented, consistently shaped, and exclude private
     assert.deepEqual(JSON.parse(text), {
         status: 429,
         success: false,
-        creator: 'Zahid dev',
+        creator: 'DaraTech',
         code: 'API_KEY_DAILY_LIMIT_EXCEEDED',
         error: 'daily request limit reached',
         message: 'daily request limit reached',
