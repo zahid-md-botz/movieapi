@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RUNFLIX MovieAPI · Key Manager</title>
+    <title>ZAHID MOVIE API · Admin</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <meta name="robots" content="noindex">
     <style>
@@ -200,13 +200,36 @@
         .req-summary b { color: #e2e8f0; }
         .load-err { display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap; background: rgba(239,68,68,0.06); border: 1px solid rgba(239,68,68,0.2); color: #fca5a5; border-radius: 10px; padding: 0.6rem 0.9rem; font-size: 12px; margin-bottom: 0.75rem; }
         input[type="email"], input[type="tel"] { flex: 1; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.09); border-radius: 8px; padding: 0.55rem 0.8rem; color: #fff; font-size: 12px; font-family: monospace; outline: none; width: 100%; min-width: 0; }
+
+        /* Smooth motion polish: subtle, fast, and respectful of reduced-motion. */
+        :root { scroll-behavior: smooth; }
+        body { animation: page-enter .42s cubic-bezier(.22,1,.36,1) both; }
+        main > section, main > div { animation: content-rise .55s cubic-bezier(.22,1,.36,1) both; }
+        main > section:nth-child(2), main > div:nth-child(2) { animation-delay: .06s; }
+        main > section:nth-child(3), main > div:nth-child(3) { animation-delay: .12s; }
+        main > section:nth-child(4), main > div:nth-child(4) { animation-delay: .18s; }
+        a, button, input, select, textarea, .nav-link, .btn, .btn-primary, .btn-ghost, .btn-email {
+            transition: transform .22s cubic-bezier(.22,1,.36,1), color .22s ease,
+                        background-color .22s ease, border-color .22s ease, box-shadow .22s ease;
+        }
+        .btn:hover, .btn-primary:hover, .btn-ghost:hover, .btn-email:hover,
+        button:not(:disabled):hover { transform: translateY(-2px); }
+        .nav-link:hover { transform: translateX(2px); }
+        .endpoint-card, .stat-card, .glass, .card { transition: transform .28s cubic-bezier(.22,1,.36,1), box-shadow .28s ease, border-color .28s ease; }
+        .endpoint-card:hover, .stat-card:hover, .glass:hover, .card:hover { transform: translateY(-3px); box-shadow: 0 14px 36px rgba(0,0,0,.18); }
+        @keyframes page-enter { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes content-rise { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @media (prefers-reduced-motion: reduce) {
+            :root { scroll-behavior: auto; }
+            *, *::before, *::after { animation-duration: .001ms !important; animation-iteration-count: 1 !important; transition-duration: .001ms !important; scroll-behavior: auto !important; }
+        }
     </style>
 </head>
 <body>
     <header>
         <div class="logo">
             <div class="logo-icon"><i class="fas fa-key"></i></div>
-            <span class="logo-text">RUNFLIX</span>
+            <span class="logo-text">ZAHID MOVIE API</span>
             <span class="logo-sub">KEY MANAGER</span>
         </div>
         <nav aria-label="Admin">
@@ -232,7 +255,7 @@
 
     <main id="mainContent" style="display:none;">
         <div class="page-title"><i class="fas fa-key" style="color:#a78bfa;font-size:18px;"></i> API Key Manager</div>
-        <p class="page-desc">Review access requests, issue, rotate, edit and revoke MovieAPI keys, including the public <code style="color:#a78bfa;font-size:11.5px;">daratechapi</code> key used by the docs and Try page. Changes apply to the live API immediately.</p>
+        <p class="page-desc">Review access requests, issue, rotate, edit and revoke MovieAPI keys, including the public <code style="color:#a78bfa;font-size:11.5px;">zahidmovieapi</code> key used by the docs and Try page. Changes apply to the live API immediately.</p>
 
         <div class="stats-bar" id="statsBar"></div>
 
@@ -355,7 +378,7 @@
     <script>
     (function () {
         'use strict';
-        const SS = 'movieapi_admin_secret', PUBLIC = 'daratechapi';
+        const SS = 'zahid_movieapi_admin_secret', PUBLIC = 'zahidmovieapi';
         const $ = id => document.getElementById(id);
         let secret = '', keys = [], reqs = [], reqFilter = 'pending', editing = null, approving = null, confirmFn = null, keysLoaded = false, reqsLoaded = false;
 
@@ -453,7 +476,7 @@
             const q = $('filterInput').value.trim().toLowerCase();
             const L = $('keysList'); L.textContent = '';
             if (!keys.length) {
-                L.append(el('div', { class: 'empty-state' }, fa('fas fa-key'), el('p', { text: 'No keys yet. Issue one to get started, including the public daratechapi key.' }),
+                L.append(el('div', { class: 'empty-state' }, fa('fas fa-key'), el('p', { text: 'No keys yet. Issue one to get started, including the public zahidmovieapi key.' }),
                     el('button', { class: 'btn btn-violet', type: 'button', style: 'margin-top:0.75rem;', onclick: () => openEdit(null) }, fa('fas fa-plus'), ' Issue Key')));
                 return;
             }
@@ -634,7 +657,7 @@
             const body = { owner, email, phone, plan: $('fPlan').value.trim(), note: $('fNote').value.trim(), domains, enabled: $('fOn').checked, expiresAt, limits };
             if (!editing && key) body.key = key;
             if (rotating) body.newKey = key;
-            if (rotating && editing.key === PUBLIC && !confirm('Rotating daratechapi breaks the docs and Try page until clients use the new string. Continue?')) return;
+            if (rotating && editing.key === PUBLIC && !confirm('Rotating zahidmovieapi breaks the docs and Try page until clients use the new string. Continue?')) return;
             const sb = $('saveBtn'); sb.disabled = true;
             try {
                 if (approving) {
