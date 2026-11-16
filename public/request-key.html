@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Request a DaraTech MovieAPI Key</title>
-    <meta name="description" content="Request a personal MovieAPI key from DaraTech. Existing key limit increases, renewals, and other upgrades are handled on WhatsApp.">
+    <title>ZAHID MOVIE API | Request an API Key</title>
+    <meta name="description" content="Request a personal MovieAPI key from Zahid dev. Existing key limit increases, renewals, and other upgrades are handled by email.">
     <meta name="robots" content="noindex,follow">
     <meta name="theme-color" content="#050508">
-    <link rel="canonical" href="https://movieapi.runflix.name.ng/request-key">
-    <link rel="icon" type="image/x-icon" href="https://runflix.name.ng/favicon.png">
+    <link rel="canonical" href="https://YOUR-RAILWAY-DOMAIN.up.railway.app/request-key">
+    <link rel="icon" type="image/x-icon" href="/favicon.svg">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -46,8 +46,8 @@
         .btn-violet { background: linear-gradient(135deg,#8b5cf6,#6366f1); color: #fff; }
         .btn-violet:hover { opacity: 0.9; transform: translateY(-1px); }
         .btn-violet:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
-        .btn-whatsapp { background: linear-gradient(135deg,#25d366,#128c7e); color: #fff; font-size: 15px; padding: 0.9rem; }
-        .btn-whatsapp:hover { opacity: 0.95; transform: translateY(-1px); box-shadow: 0 8px 24px rgba(37,211,102,0.3); }
+        .btn-email { background: linear-gradient(135deg,#25d366,#128c7e); color: #fff; font-size: 15px; padding: 0.9rem; }
+        .btn-email:hover { opacity: 0.95; transform: translateY(-1px); box-shadow: 0 8px 24px rgba(37,211,102,0.3); }
         .btn-docs { background: linear-gradient(135deg,#06b6d4,#0891b2); color: #fff; font-size: 14px; padding: 0.75rem; }
         .btn-docs:hover { opacity: 0.9; transform: translateY(-1px); }
 
@@ -71,21 +71,44 @@
         .error-msg { font-size: 12px; color: #fca5a5; margin-top: 0.75rem; text-align: center; min-height: 18px; }
         .spinner { display: inline-block; width: 14px; height: 14px; border: 2px solid rgba(255,255,255,0.3); border-top-color: #fff; border-radius: 50%; animation: spin 0.7s linear infinite; }
         @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* Smooth motion polish: subtle, fast, and respectful of reduced-motion. */
+        :root { scroll-behavior: smooth; }
+        body { animation: page-enter .42s cubic-bezier(.22,1,.36,1) both; }
+        main > section, main > div { animation: content-rise .55s cubic-bezier(.22,1,.36,1) both; }
+        main > section:nth-child(2), main > div:nth-child(2) { animation-delay: .06s; }
+        main > section:nth-child(3), main > div:nth-child(3) { animation-delay: .12s; }
+        main > section:nth-child(4), main > div:nth-child(4) { animation-delay: .18s; }
+        a, button, input, select, textarea, .nav-link, .btn, .btn-primary, .btn-ghost, .btn-email {
+            transition: transform .22s cubic-bezier(.22,1,.36,1), color .22s ease,
+                        background-color .22s ease, border-color .22s ease, box-shadow .22s ease;
+        }
+        .btn:hover, .btn-primary:hover, .btn-ghost:hover, .btn-email:hover,
+        button:not(:disabled):hover { transform: translateY(-2px); }
+        .nav-link:hover { transform: translateX(2px); }
+        .endpoint-card, .stat-card, .glass, .card { transition: transform .28s cubic-bezier(.22,1,.36,1), box-shadow .28s ease, border-color .28s ease; }
+        .endpoint-card:hover, .stat-card:hover, .glass:hover, .card:hover { transform: translateY(-3px); box-shadow: 0 14px 36px rgba(0,0,0,.18); }
+        @keyframes page-enter { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes content-rise { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @media (prefers-reduced-motion: reduce) {
+            :root { scroll-behavior: auto; }
+            *, *::before, *::after { animation-duration: .001ms !important; animation-iteration-count: 1 !important; transition-duration: .001ms !important; scroll-behavior: auto !important; }
+        }
     </style>
 </head>
 <body>
     <header>
         <div class="logo">
             <div class="logo-icon"><i class="fas fa-film"></i></div>
-            <span class="logo-text">RUNFLIX</span>
+            <span class="logo-text">ZAHID MOVIE API</span>
         </div>
         <a href="/docs" class="back-link"><i class="fas fa-book-open" style="font-size:10px;"></i> <span>View Docs</span></a>
     </header>
 
     <div class="hero">
         <div class="hero-badge"><i class="fas fa-key"></i> API Access</div>
-        <h1>Get your <span>RUNFLIX API</span> key</h1>
-        <p>Tell us who you are and what you are building. Requests are queued for manual review, and the key is sent to you personally by email or WhatsApp once approved.</p>
+        <h1>Get your <span>ZAHID MOVIE API</span> key</h1>
+        <p>Tell us who you are and what you are building. Requests are queued for manual review, and the key is sent to you personally by email once approved.</p>
     </div>
 
     <div class="features">
@@ -118,8 +141,8 @@
                     <input type="email" id="fEmail" maxlength="160" placeholder="you@example.com" autocomplete="email">
                 </div>
                 <div class="field">
-                    <label class="field-label" for="fPhone">Phone / WhatsApp</label>
-                    <input type="tel" id="fPhone" maxlength="40" placeholder="+234 800 000 0000" autocomplete="tel">
+                    <label class="field-label" for="fPhone">Phone / Contact</label>
+                    <input type="tel" id="fPhone" maxlength="40" placeholder="+92 300 0000000" autocomplete="tel">
                     <div class="hint-line">Provide at least one of email or phone so we can deliver your key.</div>
                 </div>
                 <div class="field">
@@ -136,20 +159,20 @@
                 <div class="error-msg" id="errMsg" role="alert"></div>
             </form>
 
-            <p class="wa-note">Submitting saves your request and opens WhatsApp with your details prepared. Tap Send in WhatsApp to finish.</p>
+            <p class="wa-note">Submitting saves your request and opens an email draft with your details prepared. Tap Send in your email app to finish.</p>
             <div class="success-state" id="successState" role="status">
                 <div class="success-icon"><i class="fas fa-check"></i></div>
                 <div class="success-title">Request received</div>
-                <div class="success-desc" id="successDesc">Your request is saved. Continue to WhatsApp and send the prepared message to complete your request.</div>
+                <div class="success-desc" id="successDesc">Your request is saved. Email support and send the prepared message to complete your request.</div>
                 <div class="ref-box" id="refBox" style="display:none;">Reference <span id="refId"></span></div>
-                <a id="whatsappContinue" class="btn btn-whatsapp" href="https://wa.me/2348100785677" target="_blank" rel="noopener" style="margin-top:0.75rem;"><i class="fab fa-whatsapp"></i> Continue to WhatsApp</a>
+                <a id="emailContinue" class="btn btn-email" href="mailto:myweb615265@gmail.com" rel="noopener" style="margin-top:0.75rem;"><i class="fas fa-envelope"></i> Email support</a>
                 <a href="/docs" class="btn btn-docs" style="margin-top:0.75rem;">
                     <i class="fas fa-book-open"></i> Explore the Documentation
                 </a>
                 <a href="/try" class="btn" style="background:transparent;border:1px solid rgba(255,255,255,0.09);color:var(--muted);margin-top:0.5rem;">
                     <i class="fas fa-flask"></i> Try Live Search with the Public Key
                 </a>
-                <p class="wa-note">WhatsApp opens after your request is saved. You still need to tap Send there. Limit increases, renewals and all key upgrades are handled on WhatsApp.</p>
+                <p class="wa-note">Your email app opens after your request is saved. Send the prepared message to complete your request. Limit increases, renewals and key upgrades are handled by email.</p>
             </div>
         </div>
     </div>
@@ -184,10 +207,10 @@
                 if (d.message) $('successDesc').textContent = d.message;
                 if (d.requestId) { $('refId').textContent = d.requestId; $('refBox').style.display = 'block'; }
                 $('formState').style.display = 'none'; $('successState').style.display = 'block';
-                if(d.whatsappUrl) {
-                    $('whatsappContinue').href=d.whatsappUrl;
-                    if(handoff&&!handoff.closed)handoff.location.replace(d.whatsappUrl);
-                    else window.location.assign(d.whatsappUrl);
+                if(d.emailUrl) {
+                    $('emailContinue').href=d.emailUrl;
+                    if(handoff&&!handoff.closed)handoff.location.replace(d.emailUrl);
+                    else window.location.assign(d.emailUrl);
                 } else if(handoff&&!handoff.closed)handoff.close();
             } catch {if(handoff&&!handoff.closed)handoff.close();err('Network error. Your details are still in the form; please try again.');}
             finally { btn.disabled = false; btn.innerHTML = btnHtml; }
