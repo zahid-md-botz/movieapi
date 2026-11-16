@@ -1,4 +1,4 @@
-// Node origins only. Never import this transport into the Cloudflare Worker.
+// Outbound HTTP transport for the Railway-hosted Node.js API.
 import { ProxyAgent, fetch as proxyFetch } from 'undici';
 
 export function createOutboundFetch(proxyUrl=process.env.MOVIEBOX_PROXY_URL) {
