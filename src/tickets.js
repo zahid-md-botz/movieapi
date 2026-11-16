@@ -34,7 +34,7 @@ export function safeMediaUrl(value) {
 }
 export async function fetchMedia(url,headers,range=null,method='GET',fetcher=globalThis.fetch) {
     let target=safeMediaUrl(url);
-    if(range && !/^bytes=(?:\d+-\d*|-\d+)$/.test(range)) throw new UpstreamError('Only a single byte range is supported',416);
+    if(range && !/^bytes=\d*-\d*$/.test(range)) throw new UpstreamError('Only a single byte range is supported',416);
     // Redirect destinations are checked too: no arbitrary-URL or localhost proxy.
     for(let i=0;i<5;i++) {
         const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),30000);
