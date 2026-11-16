@@ -1,10 +1,29 @@
-name = "zahid-movieapi"
-main = "cloudflare/worker.js"
-compatibility_date = "2026-11-15"
-workers_dev = true
+name = "movieapi"
+main = "runtime-worker.js"
+compatibility_date = "2026-10-01"
+compatibility_flags = ["nodejs_compat"]
+account_id = "8979e94775109424eb5e1b66c665e561"
 
 [vars]
-ORIGIN_URL = "https://movieapi-production-59c04909.up.railway.app"
+ENGINE_RELAY_URL = "https://movieapi-production-59c04909.up.railway.app"
 
 [observability]
 enabled = true
+
+# Static assets — bundled at deploy time, no KV writes needed
+[assets]
+directory = "./public"
+binding = "ASSETS"
+
+# KV namespace (kept for API-key store and any legacy data)
+[[kv_namespaces]]
+binding = "KV_STORE"
+id = "1a518d50e5c241ae8e5d16974d3fb24c"
+
+[[durable_objects.bindings]]
+name = "API_KEY_LEDGER"
+class_name = "ApiKeyLedger"
+
+[[migrations]]
+tag = "key-ledger-sqlite"
+new_sqlite_classes = ["ApiKeyLedger"]
