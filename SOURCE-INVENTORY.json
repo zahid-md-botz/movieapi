@@ -1,0 +1,893 @@
+[
+  {
+    "path": ".data/",
+    "kind": "directory"
+  },
+  {
+    "path": ".data/keys.sqlite",
+    "bytes": 4096,
+    "sha256": "2fb9e76bc8b8bb820a77e21342abe7b079f687749503315e13c0cf95106675e0",
+    "handling": "excluded local runtime state; original retained"
+  },
+  {
+    "path": ".data/keys.sqlite-shm",
+    "bytes": 32768,
+    "sha256": "8e6f071c4c7b945080844cc64a92cc1b4797e26c3ba0bd80a89a18d3780cb0a5",
+    "handling": "excluded local runtime state; original retained"
+  },
+  {
+    "path": ".data/keys.sqlite-wal",
+    "bytes": 210152,
+    "sha256": "ec34b803ef70f06c4f8ebf5c2efc3df4a3d6bc0d2b1e95a5b45c776961429c78",
+    "handling": "excluded local runtime state; original retained"
+  },
+  {
+    "path": ".wrangler/",
+    "kind": "directory"
+  },
+  {
+    "path": ".wrangler/state/",
+    "kind": "directory"
+  },
+  {
+    "path": ".wrangler/state/v3/",
+    "kind": "directory"
+  },
+  {
+    "path": ".wrangler/state/v3/cache/",
+    "kind": "directory"
+  },
+  {
+    "path": ".wrangler/state/v3/cache/miniflare-CacheObject/",
+    "kind": "directory"
+  },
+  {
+    "path": ".wrangler/state/v3/cache/miniflare-CacheObject/metadata.sqlite",
+    "bytes": 4096,
+    "sha256": "4c34b48e33536be849e9810707c97ff2b5625bb5cbf1637dbe384cfffdda3b9d",
+    "handling": "excluded local runtime state; original retained"
+  },
+  {
+    "path": ".wrangler/state/v3/cache/miniflare-CacheObject/metadata.sqlite-shm",
+    "bytes": 32768,
+    "sha256": "921f453475e71b4cd9537b8644e8aede70d4c695c78db7fbbacdf8c40712c38e",
+    "handling": "excluded local runtime state; original retained"
+  },
+  {
+    "path": ".wrangler/state/v3/cache/miniflare-CacheObject/metadata.sqlite-wal",
+    "bytes": 8272,
+    "sha256": "a0b16c1bb06a1d1e83ac4904b0d540a1ff3daec701f955f2509c5cf2be4905e2",
+    "handling": "excluded local runtime state; original retained"
+  },
+  {
+    "path": ".wrangler/state/v3/kv/",
+    "kind": "directory"
+  },
+  {
+    "path": ".wrangler/state/v3/kv/1a518d50e5c241ae8e5d16974d3fb24c/",
+    "kind": "directory"
+  },
+  {
+    "path": ".wrangler/state/v3/kv/1a518d50e5c241ae8e5d16974d3fb24c/blobs/",
+    "kind": "directory"
+  },
+  {
+    "path": ".wrangler/state/v3/kv/1a518d50e5c241ae8e5d16974d3fb24c/blobs/07075a267e5257036f81c21cf93fcaba4c8608d8a2a92846611b32db725409370000019eaff442b0",
+    "bytes": 43600,
+    "sha256": "7fd7b6f65c72118ab2b5d72a8965dae6d5c1727639382f3ba1af5c21f94f5745",
+    "handling": "excluded local runtime state; original retained"
+  },
+  {
+    "path": ".wrangler/state/v3/kv/1a518d50e5c241ae8e5d16974d3fb24c/blobs/1a75caca021f77c3a74f6dcf1fc91891f83c9c15cbb8b9bab61ab705d93027ed0000019eaff4843c",
+    "bytes": 23038,
+    "sha256": "cc952fc7e3943f99c4de601ca4486928fd1c422055263bf1b647fdb98b3b764f",
+    "handling": "excluded local runtime state; original retained"
+  },
+  {
+    "path": ".wrangler/state/v3/kv/1a518d50e5c241ae8e5d16974d3fb24c/blobs/52fa2846870cb68d6ba9ff7db20724f80b39dfbd7af5d1878f199d5e95329fb60000019eaff463a0",
+    "bytes": 11194,
+    "sha256": "230d3071ea065be8f9f23c5ea7969d835c63ff5fec29c344e16d47988ff001d9",
+    "handling": "excluded local runtime state; original retained"
+  },
+  {
+    "path": ".wrangler/state/v3/kv/1a518d50e5c241ae8e5d16974d3fb24c/blobs/9b14f55e3f26d0f774a313a49e4e20aee22fa7dd239b59fd255bb02cd870ec3c0000019eaff45378",
+    "bytes": 83319,
+    "sha256": "e3788ca52722840280dad22ac2e0537377c70cd9d06064b94a4d612a38d9d701",
+    "handling": "excluded local runtime state; original retained"
+  },
+  {
+    "path": ".wrangler/state/v3/kv/1a518d50e5c241ae8e5d16974d3fb24c/blobs/b30e7f9ea4144250f39dba39cc78ee3ebc504cc23f8f0e7bd1eafda1c62406810000019ec935b2e5",
+    "bytes": 5612,
+    "sha256": "e8c7dc8aee9e93728a67634af7ebcc0f25117c3105b4f6485fcf06a0836cf201",
+    "handling": "excluded local runtime state; original retained"
+  },
+  {
+    "path": ".wrangler/state/v3/kv/1a518d50e5c241ae8e5d16974d3fb24c/blobs/cc8ec199dcc38af5594a1cad8725df3357a56bc8e1db9cf3c87bf4dd9f0ef9b30000019eaff473e2",
+    "bytes": 23938,
+    "sha256": "56f19ad5bff5ed9d1b4ec4be606303ca1c09f122bb7d91eb3499e612a2256130",
+    "handling": "excluded local runtime state; original retained"
+  },
+  {
+    "path": ".wrangler/state/v3/kv/1a518d50e5c241ae8e5d16974d3fb24c/blobs/f922ddc2a1f53536917347a680318278ff398f664ddcd96422d3359cecdadc6e0000019ec935a02a",
+    "bytes": 2601,
+    "sha256": "27e38a7895776b912eaa0a3d7fef73896bdcdbed44143cd82308f4bc161812bf",
+    "handling": "excluded local runtime state; original retained"
+  },
+  {
+    "path": ".wrangler/state/v3/kv/miniflare-KVNamespaceObject/",
+    "kind": "directory"
+  },
+  {
+    "path": ".wrangler/state/v3/kv/miniflare-KVNamespaceObject/290a44057ea1c44b0d249b87e5e7798279ada244da2295a5470833d0a7d3c990.sqlite",
+    "bytes": 4096,
+    "sha256": "4c34b48e33536be849e9810707c97ff2b5625bb5cbf1637dbe384cfffdda3b9d",
+    "handling": "excluded local runtime state; original retained"
+  },
+  {
+    "path": ".wrangler/state/v3/kv/miniflare-KVNamespaceObject/290a44057ea1c44b0d249b87e5e7798279ada244da2295a5470833d0a7d3c990.sqlite-shm",
+    "bytes": 32768,
+    "sha256": "a4219c954ce3226c1f6f0b99aaaefe2aad6777b63cee2ec152ffc47fa614be50",
+    "handling": "excluded local runtime state; original retained"
+  },
+  {
+    "path": ".wrangler/state/v3/kv/miniflare-KVNamespaceObject/290a44057ea1c44b0d249b87e5e7798279ada244da2295a5470833d0a7d3c990.sqlite-wal",
+    "bytes": 103032,
+    "sha256": "0492e8b7e751564da75925aca11a6bed5ee841c94df7e3645195770da9397413",
+    "handling": "excluded local runtime state; original retained"
+  },
+  {
+    "path": ".wrangler/state/v3/kv/miniflare-KVNamespaceObject/metadata.sqlite",
+    "bytes": 4096,
+    "sha256": "4c34b48e33536be849e9810707c97ff2b5625bb5cbf1637dbe384cfffdda3b9d",
+    "handling": "excluded local runtime state; original retained"
+  },
+  {
+    "path": ".wrangler/state/v3/kv/miniflare-KVNamespaceObject/metadata.sqlite-shm",
+    "bytes": 32768,
+    "sha256": "d1bece1a0d422c64ba18a939816a95b819880608e2b81c35afe0eacba0701496",
+    "handling": "excluded local runtime state; original retained"
+  },
+  {
+    "path": ".wrangler/state/v3/kv/miniflare-KVNamespaceObject/metadata.sqlite-wal",
+    "bytes": 8272,
+    "sha256": "de650c0dc721052f1237de18a6411c75e2c5fc98b4b7ab21d5f42659b963cfa0",
+    "handling": "excluded local runtime state; original retained"
+  },
+  {
+    "path": ".wrangler/tmp/",
+    "kind": "directory"
+  },
+  {
+    "path": "RAILWAY.md",
+    "bytes": 2668,
+    "sha256": "79f985ee9240a73faed1b01edbade8b3d3a30e976e7d0b75e77e16b2d937e82f",
+    "handling": "source inspected",
+    "changed": true
+  },
+  {
+    "path": "UPSTREAM-LICENSE.txt",
+    "bytes": 1172,
+    "sha256": "1c23c3bff1353267286ed4146b7a68985f13fd2c442f9c743df28634e220c7b2",
+    "handling": "source inspected",
+    "changed": false
+  },
+  {
+    "path": "admin.html",
+    "bytes": 57747,
+    "sha256": "65ade81efa5af11d2577b73e87852952881e6f669e3f96da78ec111bd21b685b",
+    "handling": "deduplicated to public/admin.html"
+  },
+  {
+    "path": "api-keys.json",
+    "bytes": 2,
+    "sha256": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+    "handling": "source inspected",
+    "jsonValid": true,
+    "changed": false
+  },
+  {
+    "path": "cf-config.json",
+    "bytes": 3,
+    "sha256": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356",
+    "handling": "source inspected",
+    "jsonValid": true,
+    "changed": false
+  },
+  {
+    "path": "changelog.html",
+    "bytes": 13434,
+    "sha256": "cbe676659fd8c7390f7ade83ef080832b070e709945747138d2745fed1c9314d",
+    "handling": "deduplicated to public/changelog.html"
+  },
+  {
+    "path": "changelog.json",
+    "bytes": 10937,
+    "sha256": "ca59f64df2687b77846902649eeca8e56e263d06361bb0929da6398cca9a1bf5",
+    "handling": "deduplicated to public/changelog.json",
+    "jsonValid": true
+  },
+  {
+    "path": "debug-logs.html",
+    "bytes": 13880,
+    "sha256": "fa06dfd708c5164b317a31d9ae89fdf11f88ad33c9476176668ce4591721f44c",
+    "handling": "deduplicated to public/debug-logs.html"
+  },
+  {
+    "path": "docs.html",
+    "bytes": 75489,
+    "sha256": "84da51303b167801f9bff62f8343f706e710ab58773b052b383f119f961db227",
+    "handling": "deduplicated to public/docs.html"
+  },
+  {
+    "path": "index.html",
+    "bytes": 52717,
+    "sha256": "b9cb88de308296e75f37c86e2aac52cf9bd94108bbbeb0e1c8da81c41d65c144",
+    "handling": "deduplicated to public/index.html"
+  },
+  {
+    "path": "local-server.js",
+    "bytes": 123905,
+    "sha256": "12602a2df1e0723003f0ddb20fd25735acb8116f324976cd1a9de8a6e90a944d",
+    "handling": "source inspected",
+    "changed": true
+  },
+  {
+    "path": "media-transport/",
+    "kind": "directory"
+  },
+  {
+    "path": "media-transport/curl_transport.py",
+    "bytes": 3836,
+    "sha256": "8903ffe42fba07bed223fe6472a4cd33df26a37fe10c4191b05fe78309d6cd9e",
+    "handling": "source inspected",
+    "changed": true
+  },
+  {
+    "path": "movieapi_sample_anime.json",
+    "bytes": 3657,
+    "sha256": "b32b11578c17649202e7c84c7b8d80ff9eb3349907ea6d93664b136342c5c44e",
+    "handling": "deduplicated to public/movieapi_sample_anime.json",
+    "jsonValid": true
+  },
+  {
+    "path": "movieapi_sample_anime_info.json",
+    "bytes": 33022,
+    "sha256": "d00e2f0164c613746a5d2ae38ff737eaebbd31e8c6def723fb7994fc80543fd6",
+    "handling": "deduplicated to public/movieapi_sample_anime_info.json",
+    "jsonValid": true
+  },
+  {
+    "path": "movieapi_sample_anime_search.json",
+    "bytes": 47577,
+    "sha256": "f1501e40fc0e405df8c4a7244996292475471505ef67fbbc70d2714c08ced589",
+    "handling": "deduplicated to public/movieapi_sample_anime_search.json",
+    "jsonValid": true
+  },
+  {
+    "path": "movieapi_sample_anime_sources.json",
+    "bytes": 2252,
+    "sha256": "a24fbf0d2f74d4b1a7f6c5730207b34fe55b05d622fb2acd10fed59dd77e4aaa",
+    "handling": "deduplicated to public/movieapi_sample_anime_sources.json",
+    "jsonValid": true
+  },
+  {
+    "path": "movieapi_sample_captions.json",
+    "bytes": 8042,
+    "sha256": "98b4919130c4a9001bb583212aaec36724146ef822c054fd7befc48e5a1715a4",
+    "handling": "deduplicated to public/movieapi_sample_captions.json",
+    "jsonValid": true
+  },
+  {
+    "path": "movieapi_sample_filter.json",
+    "bytes": 22444,
+    "sha256": "087e7457bf87373ddaab1b0c6276e33abc7f1695ecc92a7a44551630e31ffa9b",
+    "handling": "deduplicated to public/movieapi_sample_filter.json",
+    "jsonValid": true
+  },
+  {
+    "path": "movieapi_sample_homepage.json",
+    "bytes": 261841,
+    "sha256": "4592776892e72264a3452d5e0bb7e952c9891eb8eaad38b47d5b030072318f91",
+    "handling": "deduplicated to public/movieapi_sample_homepage.json",
+    "jsonValid": true
+  },
+  {
+    "path": "movieapi_sample_info.json",
+    "bytes": 15340,
+    "sha256": "1d9e8ba3b1cc05afdf49f3f7cb75d07e18e43aaa6ad90a5d48cb3bfbf130c7e1",
+    "handling": "deduplicated to public/movieapi_sample_info.json",
+    "jsonValid": true
+  },
+  {
+    "path": "movieapi_sample_live.json",
+    "bytes": 11240,
+    "sha256": "fa6225896e750b79dd3ab6dc98e747f71d72ed3983f0c1ea992c3e4abe5a8ec9",
+    "handling": "deduplicated to public/movieapi_sample_live.json",
+    "jsonValid": true
+  },
+  {
+    "path": "movieapi_sample_live_stream.json",
+    "bytes": 507,
+    "sha256": "76c84cc8fd5f50dabbeff348aaabe8a8a005c2c8ea0f39613040526658d1ddff",
+    "handling": "deduplicated to public/movieapi_sample_live_stream.json",
+    "jsonValid": true
+  },
+  {
+    "path": "movieapi_sample_schedule.json",
+    "bytes": 397,
+    "sha256": "e187237ce090bd75701288ac256c8068bfdc8ba11f32dd36aff83436c746e3a0",
+    "handling": "deduplicated to public/movieapi_sample_schedule.json",
+    "jsonValid": true
+  },
+  {
+    "path": "movieapi_sample_schedule_popular.json",
+    "bytes": 4635,
+    "sha256": "1d2c1ba41389298d0ac0b732e0347455444b06bc44ee010de8d2d907de9ce9b8",
+    "handling": "deduplicated to public/movieapi_sample_schedule_popular.json",
+    "jsonValid": true
+  },
+  {
+    "path": "movieapi_sample_search.json",
+    "bytes": 47137,
+    "sha256": "6691571a445a26b3ae972132a7161ce2ad4ae744699bd74739e3f0a24bfb3b5c",
+    "handling": "deduplicated to public/movieapi_sample_search.json",
+    "jsonValid": true
+  },
+  {
+    "path": "movieapi_sample_seasons_upcoming.json",
+    "bytes": 20061,
+    "sha256": "05bc5a0658e1de2e6c336d761bdfe253421adb6f56ab891df95503bab62cf25f",
+    "handling": "deduplicated to public/movieapi_sample_seasons_upcoming.json",
+    "jsonValid": true
+  },
+  {
+    "path": "movieapi_sample_sources.json",
+    "bytes": 1384,
+    "sha256": "487eeaf92aee4d525363873dc9a375516e2bd14e6c7abcca1e06e1f8ca8941e0",
+    "handling": "deduplicated to public/movieapi_sample_sources.json",
+    "jsonValid": true
+  },
+  {
+    "path": "movieapi_sample_trending.json",
+    "bytes": 48429,
+    "sha256": "d09ea66b39415585f43431c794f9645c7ef815ea01e78eabdb38be60ee7a673e",
+    "handling": "deduplicated to public/movieapi_sample_trending.json",
+    "jsonValid": true
+  },
+  {
+    "path": "package.json",
+    "bytes": 744,
+    "sha256": "75c6ea062c5361f38a4a7a7a13b21bb1e623cab70a536a21523df0c7121fb00a",
+    "handling": "source inspected",
+    "jsonValid": true,
+    "changed": false
+  },
+  {
+    "path": "production-server.js",
+    "bytes": 436,
+    "sha256": "189e677defbdefc9ba6a929e8a5e88937b238c5094eb7e33268688a1d386125b",
+    "handling": "source inspected",
+    "changed": false
+  },
+  {
+    "path": "public/",
+    "kind": "directory"
+  },
+  {
+    "path": "public/admin.html",
+    "bytes": 57747,
+    "sha256": "65ade81efa5af11d2577b73e87852952881e6f669e3f96da78ec111bd21b685b",
+    "handling": "source inspected",
+    "changed": false
+  },
+  {
+    "path": "public/changelog.html",
+    "bytes": 13434,
+    "sha256": "cbe676659fd8c7390f7ade83ef080832b070e709945747138d2745fed1c9314d",
+    "handling": "source inspected",
+    "changed": false
+  },
+  {
+    "path": "public/changelog.json",
+    "bytes": 10937,
+    "sha256": "ca59f64df2687b77846902649eeca8e56e263d06361bb0929da6398cca9a1bf5",
+    "handling": "source inspected",
+    "jsonValid": true,
+    "changed": false
+  },
+  {
+    "path": "public/debug-logs.html",
+    "bytes": 13880,
+    "sha256": "fa06dfd708c5164b317a31d9ae89fdf11f88ad33c9476176668ce4591721f44c",
+    "handling": "source inspected",
+    "changed": false
+  },
+  {
+    "path": "public/docs.html",
+    "bytes": 75489,
+    "sha256": "84da51303b167801f9bff62f8343f706e710ab58773b052b383f119f961db227",
+    "handling": "source inspected",
+    "changed": false
+  },
+  {
+    "path": "public/google2917089f3d6caa19.html",
+    "bytes": 54,
+    "sha256": "439daa932117d9df14b87cd1704974bced274ef84841bd1a65cedac591bcb016",
+    "handling": "source inspected",
+    "changed": false
+  },
+  {
+    "path": "public/index.html",
+    "bytes": 52717,
+    "sha256": "b9cb88de308296e75f37c86e2aac52cf9bd94108bbbeb0e1c8da81c41d65c144",
+    "handling": "source inspected",
+    "changed": false
+  },
+  {
+    "path": "public/movieapi_sample_anime.json",
+    "bytes": 3657,
+    "sha256": "b32b11578c17649202e7c84c7b8d80ff9eb3349907ea6d93664b136342c5c44e",
+    "handling": "source inspected",
+    "jsonValid": true,
+    "changed": false
+  },
+  {
+    "path": "public/movieapi_sample_anime_info.json",
+    "bytes": 33022,
+    "sha256": "d00e2f0164c613746a5d2ae38ff737eaebbd31e8c6def723fb7994fc80543fd6",
+    "handling": "source inspected",
+    "jsonValid": true,
+    "changed": false
+  },
+  {
+    "path": "public/movieapi_sample_anime_search.json",
+    "bytes": 47577,
+    "sha256": "f1501e40fc0e405df8c4a7244996292475471505ef67fbbc70d2714c08ced589",
+    "handling": "source inspected",
+    "jsonValid": true,
+    "changed": false
+  },
+  {
+    "path": "public/movieapi_sample_anime_sources.json",
+    "bytes": 2252,
+    "sha256": "a24fbf0d2f74d4b1a7f6c5730207b34fe55b05d622fb2acd10fed59dd77e4aaa",
+    "handling": "source inspected",
+    "jsonValid": true,
+    "changed": false
+  },
+  {
+    "path": "public/movieapi_sample_captions.json",
+    "bytes": 8042,
+    "sha256": "98b4919130c4a9001bb583212aaec36724146ef822c054fd7befc48e5a1715a4",
+    "handling": "source inspected",
+    "jsonValid": true,
+    "changed": false
+  },
+  {
+    "path": "public/movieapi_sample_filter.json",
+    "bytes": 22444,
+    "sha256": "087e7457bf87373ddaab1b0c6276e33abc7f1695ecc92a7a44551630e31ffa9b",
+    "handling": "source inspected",
+    "jsonValid": true,
+    "changed": false
+  },
+  {
+    "path": "public/movieapi_sample_homepage.json",
+    "bytes": 261841,
+    "sha256": "4592776892e72264a3452d5e0bb7e952c9891eb8eaad38b47d5b030072318f91",
+    "handling": "source inspected",
+    "jsonValid": true,
+    "changed": false
+  },
+  {
+    "path": "public/movieapi_sample_info.json",
+    "bytes": 15340,
+    "sha256": "1d9e8ba3b1cc05afdf49f3f7cb75d07e18e43aaa6ad90a5d48cb3bfbf130c7e1",
+    "handling": "source inspected",
+    "jsonValid": true,
+    "changed": false
+  },
+  {
+    "path": "public/movieapi_sample_live.json",
+    "bytes": 11240,
+    "sha256": "fa6225896e750b79dd3ab6dc98e747f71d72ed3983f0c1ea992c3e4abe5a8ec9",
+    "handling": "source inspected",
+    "jsonValid": true,
+    "changed": false
+  },
+  {
+    "path": "public/movieapi_sample_live_stream.json",
+    "bytes": 507,
+    "sha256": "76c84cc8fd5f50dabbeff348aaabe8a8a005c2c8ea0f39613040526658d1ddff",
+    "handling": "source inspected",
+    "jsonValid": true,
+    "changed": false
+  },
+  {
+    "path": "public/movieapi_sample_manga_chapter.json",
+    "bytes": 796,
+    "sha256": "74e4306b941a7be1f826da1838ee859f0490346c1b3629fa26c335ae8665829d",
+    "handling": "source inspected",
+    "jsonValid": true,
+    "changed": false
+  },
+  {
+    "path": "public/movieapi_sample_manga_details.json",
+    "bytes": 2048,
+    "sha256": "2f10045085fa8fb9bbd7bf9bc7583140864a297a12c1e8895e28381efa2ce332",
+    "handling": "source inspected",
+    "jsonValid": true,
+    "changed": false
+  },
+  {
+    "path": "public/movieapi_sample_manga_genres.json",
+    "bytes": 1043,
+    "sha256": "70840815dddaefefa0c2c4c481dcbe4eb3a55338e8744e566fbf375dc34d10b1",
+    "handling": "source inspected",
+    "jsonValid": true,
+    "changed": false
+  },
+  {
+    "path": "public/movieapi_sample_manga_home.json",
+    "bytes": 10029,
+    "sha256": "fe6a013bf3f8c74a744b3114b6810d20fe7dda427fb452945dfafa486ff3aa37",
+    "handling": "source inspected",
+    "jsonValid": true,
+    "changed": false
+  },
+  {
+    "path": "public/movieapi_sample_manga_popular.json",
+    "bytes": 1496,
+    "sha256": "ec08de0261f02cb72b06282d2bea9824909a366a991a27a5ada326724312aeab",
+    "handling": "source inspected",
+    "jsonValid": true,
+    "changed": false
+  },
+  {
+    "path": "public/movieapi_sample_manga_search.json",
+    "bytes": 896,
+    "sha256": "149d3e7146015c215663dc6d97de411df824dba2f476a266b8ef0ca2377efa61",
+    "handling": "source inspected",
+    "jsonValid": true,
+    "changed": false
+  },
+  {
+    "path": "public/movieapi_sample_schedule.json",
+    "bytes": 397,
+    "sha256": "e187237ce090bd75701288ac256c8068bfdc8ba11f32dd36aff83436c746e3a0",
+    "handling": "source inspected",
+    "jsonValid": true,
+    "changed": false
+  },
+  {
+    "path": "public/movieapi_sample_schedule_popular.json",
+    "bytes": 4635,
+    "sha256": "1d2c1ba41389298d0ac0b732e0347455444b06bc44ee010de8d2d907de9ce9b8",
+    "handling": "source inspected",
+    "jsonValid": true,
+    "changed": false
+  },
+  {
+    "path": "public/movieapi_sample_search.json",
+    "bytes": 47137,
+    "sha256": "6691571a445a26b3ae972132a7161ce2ad4ae744699bd74739e3f0a24bfb3b5c",
+    "handling": "source inspected",
+    "jsonValid": true,
+    "changed": false
+  },
+  {
+    "path": "public/movieapi_sample_seasons_upcoming.json",
+    "bytes": 20061,
+    "sha256": "05bc5a0658e1de2e6c336d761bdfe253421adb6f56ab891df95503bab62cf25f",
+    "handling": "source inspected",
+    "jsonValid": true,
+    "changed": false
+  },
+  {
+    "path": "public/movieapi_sample_sources.json",
+    "bytes": 1384,
+    "sha256": "487eeaf92aee4d525363873dc9a375516e2bd14e6c7abcca1e06e1f8ca8941e0",
+    "handling": "source inspected",
+    "jsonValid": true,
+    "changed": false
+  },
+  {
+    "path": "public/movieapi_sample_trending.json",
+    "bytes": 48429,
+    "sha256": "d09ea66b39415585f43431c794f9645c7ef815ea01e78eabdb38be60ee7a673e",
+    "handling": "source inspected",
+    "jsonValid": true,
+    "changed": false
+  },
+  {
+    "path": "public/request-key.html",
+    "bytes": 14481,
+    "sha256": "1dcf63c3b521b8201b0063439f87ef0cffee290c224f77eba6418435d28d53ea",
+    "handling": "source inspected",
+    "changed": false
+  },
+  {
+    "path": "public/robots.txt",
+    "bytes": 150,
+    "sha256": "feb3b36782efffbe52f2efcbd757671cbf67997e2d133d4192d2b5d3425e03a8",
+    "handling": "source inspected",
+    "changed": false
+  },
+  {
+    "path": "public/sitemap.xml",
+    "bytes": 358,
+    "sha256": "11b14626d5090ddf2035751471b2d0ba7cc77a19070c1cbfc9d6c8aa4597de21",
+    "handling": "source inspected",
+    "changed": false
+  },
+  {
+    "path": "public/stats.html",
+    "bytes": 24360,
+    "sha256": "d3ce737402d9adc03f8de35c3eadef6194d8c8e2a1f17add24a248e89a5cb9cb",
+    "handling": "source inspected",
+    "changed": false
+  },
+  {
+    "path": "public/test-channels.html",
+    "bytes": 53794,
+    "sha256": "db1a1295ec2c7f47854baf7d28242e81c2903e64097015235650bb20cad71dc4",
+    "handling": "source inspected",
+    "changed": false
+  },
+  {
+    "path": "public/try.html",
+    "bytes": 32420,
+    "sha256": "56e478a50d736c267949b86a236374d666ab4482033bfd2ae81de4c0dc36fe67",
+    "handling": "source inspected",
+    "changed": false
+  },
+  {
+    "path": "python-origin/",
+    "kind": "directory"
+  },
+  {
+    "path": "python-origin/bundle.py",
+    "bytes": 6318,
+    "sha256": "40b9adf6a135b689f1dee3e73947d1eab9130f205da7a42283061ff6ae760af8",
+    "handling": "source inspected",
+    "changed": true
+  },
+  {
+    "path": "python-origin/local.py",
+    "bytes": 1071,
+    "sha256": "c157666b7b38646e334391e2e089bf1b4c19281dc8daf342e0783c8927bfbbea",
+    "handling": "source inspected",
+    "changed": true
+  },
+  {
+    "path": "python-origin/requirements.txt",
+    "bytes": 86,
+    "sha256": "289364261baa4a8874b277126e2e9c1e72ddb3b97eaee8a0a313363129332279",
+    "handling": "source inspected",
+    "changed": true
+  },
+  {
+    "path": "python-origin/server.py",
+    "bytes": 35836,
+    "sha256": "caca8fcec66bd16ae9d42e1cf28b45dc6848e6229ef68a4c81209bf7f4a83de4",
+    "handling": "source inspected",
+    "changed": true
+  },
+  {
+    "path": "python-origin/test_server.py",
+    "bytes": 13528,
+    "sha256": "c9ebac866cb7862f44d58a92f51044ec43a96660872dbf83934b31f7909116fa",
+    "handling": "source inspected",
+    "changed": true
+  },
+  {
+    "path": "railway.toml",
+    "bytes": 254,
+    "sha256": "804e37e442837cfadc396f47b5b5ecd325786d6cde283963de87172ca9137f95",
+    "handling": "source inspected",
+    "changed": true
+  },
+  {
+    "path": "relay-server.js",
+    "bytes": 2455,
+    "sha256": "727760d85cd817a7039fabe823ea374be918c9ac939a9a53bb553418a4a2bd14",
+    "handling": "source inspected",
+    "changed": false
+  },
+  {
+    "path": "request-key.html",
+    "bytes": 14481,
+    "sha256": "1dcf63c3b521b8201b0063439f87ef0cffee290c224f77eba6418435d28d53ea",
+    "handling": "deduplicated to public/request-key.html"
+  },
+  {
+    "path": "runtime-worker.js",
+    "bytes": 3316,
+    "sha256": "72cbef92fe57ea8ead8f18d56a30301329bb4b0d4a28d8d38d1151a52374ecfa",
+    "handling": "source inspected",
+    "changed": true
+  },
+  {
+    "path": "src/",
+    "kind": "directory"
+  },
+  {
+    "path": "src/catalog.js",
+    "bytes": 4324,
+    "sha256": "1109bf6213837124f781a2755351b0bee0cb9064ef5578436d584c485822afb8",
+    "handling": "source inspected",
+    "changed": false
+  },
+  {
+    "path": "src/key-config.js",
+    "bytes": 4123,
+    "sha256": "97999a8c34c471bd90598cfaa163ff43b979f2bda979ba00d7bf9d7a41692de3",
+    "handling": "source inspected",
+    "changed": false
+  },
+  {
+    "path": "src/key-contact.js",
+    "bytes": 1022,
+    "sha256": "35fda29cef8d15af72373a91cbf9adf24e1c9fd9a33141da8b51a5758c7f1a4b",
+    "handling": "source inspected",
+    "changed": false
+  },
+  {
+    "path": "src/key-requests.js",
+    "bytes": 3992,
+    "sha256": "afddcafa6c93c247a82b6f3719ce2b16b069ce32f1833e127db48638edb19b39",
+    "handling": "source inspected",
+    "changed": false
+  },
+  {
+    "path": "src/key-store.js",
+    "bytes": 12279,
+    "sha256": "4867d5ee2ecceb28121e10d5280cc90b6e3cfa962a8c5dc70ee21c4d2129c60a",
+    "handling": "source inspected",
+    "changed": false
+  },
+  {
+    "path": "src/local-ledger.js",
+    "bytes": 1015,
+    "sha256": "e6220789eed4847ad6c0d07876726985eb75d119072c2b3e3516212df81ab887",
+    "handling": "source inspected",
+    "changed": false
+  },
+  {
+    "path": "src/local-modern.js",
+    "bytes": 3891,
+    "sha256": "cf8010d411e0a28c2ee66887e96ea86d5c062e8b970d028d2e8fd239944ae8b8",
+    "handling": "source inspected",
+    "changed": false
+  },
+  {
+    "path": "src/media-links.js",
+    "bytes": 1447,
+    "sha256": "5446459de6cae971fa794106646e9d39e4ee0862384f08f613f1d3c60fa11b6b",
+    "handling": "source inspected",
+    "changed": false
+  },
+  {
+    "path": "src/moviebox.js",
+    "bytes": 15008,
+    "sha256": "c076106e373c52ed0d2223d14cf7af4fe23fb9548e51e65988fcd35aa5dc056b",
+    "handling": "source inspected",
+    "changed": false
+  },
+  {
+    "path": "src/outbound.js",
+    "bytes": 1227,
+    "sha256": "50f9b450334cfd47ff5b177fd706fc8dba1430fb428c226709fa6273ceb62bb9",
+    "handling": "source inspected",
+    "changed": false
+  },
+  {
+    "path": "src/playback-sessions.js",
+    "bytes": 491,
+    "sha256": "42f83fa9e15ad71f176eac8f2bbdd0f7bd1bfeeb442e7d0bdfc5ec4e5e1e72a7",
+    "handling": "source inspected",
+    "changed": false
+  },
+  {
+    "path": "src/quota-object.js",
+    "bytes": 827,
+    "sha256": "829e9282ffd47c3bbc8bc64856e8d82dba9a8b7571511235ccdefefcf157f1bd",
+    "handling": "source inspected",
+    "changed": false
+  },
+  {
+    "path": "src/router.js",
+    "bytes": 21955,
+    "sha256": "8e9683165d1d2c138bd4d2c0429dd542608d8370df625211444a06ae1a9a6524",
+    "handling": "source inspected",
+    "changed": true
+  },
+  {
+    "path": "src/tickets.js",
+    "bytes": 3111,
+    "sha256": "1f2bb20ec4327d46768368fb7dfdfc171c1e8f7d476638115416820dbe93ea1c",
+    "handling": "source inspected",
+    "changed": true
+  },
+  {
+    "path": "stats.html",
+    "bytes": 24360,
+    "sha256": "d3ce737402d9adc03f8de35c3eadef6194d8c8e2a1f17add24a248e89a5cb9cb",
+    "handling": "deduplicated to public/stats.html"
+  },
+  {
+    "path": "test-channels.html",
+    "bytes": 53794,
+    "sha256": "db1a1295ec2c7f47854baf7d28242e81c2903e64097015235650bb20cad71dc4",
+    "handling": "deduplicated to public/test-channels.html"
+  },
+  {
+    "path": "test-error-sanitization.mjs",
+    "bytes": 1093,
+    "sha256": "b625d998c46345608839af0130c44aa8a4a0217647265c4f5ddba085598a32d5",
+    "handling": "source inspected",
+    "changed": false
+  },
+  {
+    "path": "test-key-management.mjs",
+    "bytes": 10904,
+    "sha256": "d499f9155de8bb769e2d5a6a7c15c6ba5b2c362078d761d48cb40780ae22b1ab",
+    "handling": "source inspected",
+    "changed": false
+  },
+  {
+    "path": "test-modern.mjs",
+    "bytes": 6729,
+    "sha256": "784dd84e154d47bc98c8025c1f198cfb73626ecf12df8008d2f46b398d3707e8",
+    "handling": "source inspected",
+    "changed": false
+  },
+  {
+    "path": "test-proxy.mjs",
+    "bytes": 7679,
+    "sha256": "665bfd86a09cf8ad15e531e1268885a543617f4d9a0dffbd458fb1f3b4c859ab",
+    "handling": "source inspected",
+    "changed": true
+  },
+  {
+    "path": "test-railway-relay.mjs",
+    "bytes": 4128,
+    "sha256": "874eddc7de4efe52d5d6b5929c672fd49edff3cbf19fa05e6d5ec645ef90d5af",
+    "handling": "source inspected",
+    "changed": true
+  },
+  {
+    "path": "test-readable-error-json.mjs",
+    "bytes": 2310,
+    "sha256": "3eee46f254892336bb2d020b118faf717f257594d176810e55c835e1b968f067",
+    "handling": "source inspected",
+    "changed": false
+  },
+  {
+    "path": "try.html",
+    "bytes": 32420,
+    "sha256": "56e478a50d736c267949b86a236374d666ab4482033bfd2ae81de4c0dc36fe67",
+    "handling": "deduplicated to public/try.html"
+  },
+  {
+    "path": "verify-production.mjs",
+    "bytes": 12217,
+    "sha256": "05cd607549fee041ccb68be4027c028a7fa854a70d0a43dfd8c2daa0247b4999",
+    "handling": "source inspected",
+    "changed": false
+  },
+  {
+    "path": "worker.js",
+    "bytes": 160494,
+    "sha256": "c3b5cf3f90e29484eceba397f98de6661f3185594ac8fa2aea61017bf3815fa1",
+    "handling": "source inspected",
+    "changed": false
+  },
+  {
+    "path": "wrangler.toml",
+    "bytes": 698,
+    "sha256": "9b663303c4f1b9a7eb571c5cad205009f92d79dcad008f7128b8e57b95a0f777",
+    "handling": "source inspected",
+    "changed": true
+  }
+]
