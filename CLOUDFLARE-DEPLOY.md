@@ -26,10 +26,11 @@ Do not reuse the same value for both. Do not put either value in Git, `wrangler.
 2. Open **Variables**.
 3. Keep the current `ADMIN_SECRET`, or rotate it if it was exposed. Use a new random value of at least 32 characters.
 4. Keep/add `DATA_DIR=/app/.data`.
-5. Keep any existing optional SMTP variables.
-6. Confirm the existing Railway Volume is mounted at `/app/.data`. Do not remove it; it contains the SQLite key/quota/playback database.
-7. Keep the existing Railway domain: `movieapi-production-59c04909.up.railway.app`.
-8. Keep the service start command `npm start`, Dockerfile builder, and health check `/api/v3/health`.
+5. Set `PUBLIC_BASE_URL=https://movieapi.ideapaid911.workers.dev`. This is the canonical public hostname for all generated `streamUrl`, `downloadUrl`, and short links. If you later attach a custom domain, update this variable to that exact HTTPS origin.
+6. Keep any existing optional SMTP variables.
+7. Confirm the existing Railway Volume is mounted at `/app/.data`. Do not remove it; it contains the SQLite key/quota/playback database.
+8. Keep the existing Railway domain: `movieapi-production-59c04909.up.railway.app`.
+9. Keep the service start command `npm start`, Dockerfile builder, and health check `/api/v3/health`.
 
 At this first stage, leave `EDGE_SHARED_SECRET` unset in Railway. The updated app remains reachable on its current Railway domain while you create and test the Worker. The edge guard activates automatically when you later add the secret to Railway.
 
@@ -121,6 +122,8 @@ Test a search with the public key:
 curl -H "Authorization: Bearer zahidmovieapi" \
   "https://YOUR-WORKER-URL/api/v3/search/avengers"
 ```
+
+If Cloudflare shows `502 Bad gateway` with `Host Error`, the Worker cannot get a healthy response from the Railway origin; changing media URLs cannot repair a stopped/crashed Railway deployment. Check Railway Deployments and Logs first, confirm the service is Active, and open the Railway `/api/v3/health` URL directly. The Python relay must log `Chrome-impersonating HTTP/2 transport ready`.
 
 A healthy `/health` response only proves the API process is running. Search must return actual items before moving on to media tests. At this point, the Worker secret is set but Railway has not yet enabled the edge-only guard.
 
