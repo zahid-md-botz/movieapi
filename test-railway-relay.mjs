@@ -74,8 +74,8 @@ test('production MovieAPI routing has no second-API or Replit relay configuratio
         assert.equal(source.includes('replit.app'),false);
         assert.equal(source.includes('REPLIT_PROXY_BASE'),false);
     }
-    assert.match(railwayConfig,/MOVIEAPI_SOURCE_BUNDLE/);
-    assert.match(railwayConfig,/python -c/);
+    assert.match(railwayConfig,/DOCKERFILE/);
+    assert.doesNotMatch(railwayConfig,/MOVIEAPI_SOURCE_BUNDLE/);
     assert.doesNotMatch(railwayConfig,/node relay-server\.js/);
     assert.match(pythonOrigin,/CurlStreamClient/);
     assert.match(runtime,/env\.ENGINE_RELAY_URL/);
