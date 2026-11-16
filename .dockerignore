@@ -1,0 +1,8 @@
+node_modules
+.git
+.data
+.wrangler
+.env*
+.dev.vars*
+**/__pycache__
+public
