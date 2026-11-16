@@ -3,21 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ZAHID MOVIE API | Movie Api Documentation</title>
-    <meta name="description" content="Official Zahid dev MovieAPI documentation: MovieBox search, title details, episodes, anime, football, captions, stream links, API-key authentication, and runnable examples.">
+    <title>DaraTech MovieAPI Docs | Authentication, Endpoints &amp; Examples</title>
+    <meta name="description" content="Official DaraTech MovieAPI documentation: MovieBox search, title details, episodes, anime, football, captions, stream links, API-key authentication, and runnable examples.">
     <meta name="robots" content="index,follow,max-image-preview:large">
     <meta name="theme-color" content="#02040a">
-    <link rel="canonical" href="https://YOUR-RAILWAY-DOMAIN.up.railway.app/docs">
+    <link rel="canonical" href="https://movieapi.runflix.name.ng/docs">
     <meta property="og:type" content="article">
-    <meta property="og:site_name" content="Zahid dev MovieAPI">
-    <meta property="og:title" content="Zahid dev MovieAPI Docs | API Authentication &amp; Endpoints">
+    <meta property="og:site_name" content="DaraTech MovieAPI">
+    <meta property="og:title" content="DaraTech MovieAPI Docs | API Authentication &amp; Endpoints">
     <meta property="og:description" content="Explore MovieAPI endpoints, accepted key formats, request examples and live API tests.">
-    <meta property="og:url" content="https://YOUR-RAILWAY-DOMAIN.up.railway.app/docs">
+    <meta property="og:url" content="https://movieapi.runflix.name.ng/docs">
     <meta name="twitter:card" content="summary">
-    <meta name="twitter:title" content="Zahid dev MovieAPI Docs">
+    <meta name="twitter:title" content="DaraTech MovieAPI Docs">
     <meta name="twitter:description" content="API authentication, endpoint reference and live MovieAPI examples.">
-    <script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Zahid dev MovieAPI Documentation","description":"Documentation for MovieAPI authentication, endpoints, request parameters and runnable examples.","url":"https://YOUR-RAILWAY-DOMAIN.up.railway.app/docs","author":{"@type":"Organization","name":"Zahid dev"},"publisher":{"@type":"Organization","name":"Zahid dev"},"about":{"@type":"SoftwareApplication","name":"Zahid dev MovieAPI","applicationCategory":"DeveloperApplication"}}</script>
-    <link rel="icon" type="image/x-icon" href="/favicon.svg">
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"DaraTech MovieAPI Documentation","description":"Documentation for MovieAPI authentication, endpoints, request parameters and runnable examples.","url":"https://movieapi.runflix.name.ng/docs","author":{"@type":"Organization","name":"DaraTech"},"publisher":{"@type":"Organization","name":"DaraTech"},"about":{"@type":"SoftwareApplication","name":"DaraTech MovieAPI","applicationCategory":"DeveloperApplication"}}</script>
+    <link rel="icon" type="image/x-icon" href="https://runflix.name.ng/favicon.png">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -57,7 +57,7 @@
             position: fixed;
             inset: 0;
             z-index: -2;
-            background:
+            background: 
                 radial-gradient(ellipse 60% 50% at 10% 20%, rgba(34,211,238,0.06) 0%, transparent 50%),
                 radial-gradient(ellipse 50% 60% at 90% 70%, rgba(139,92,246,0.05) 0%, transparent 50%);
         }
@@ -481,29 +481,6 @@
         #toast.show { opacity: 1; transform: translate(-50%, 0); }
         .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
         @media (max-width: 400px) { .run-acts { grid-template-columns: 1fr 1fr !important; } .run-acts .run { grid-column: 1 / -1; } }
-
-        /* Smooth motion polish: subtle, fast, and respectful of reduced-motion. */
-        :root { scroll-behavior: smooth; }
-        body { animation: page-enter .42s cubic-bezier(.22,1,.36,1) both; }
-        main > section, main > div { animation: content-rise .55s cubic-bezier(.22,1,.36,1) both; }
-        main > section:nth-child(2), main > div:nth-child(2) { animation-delay: .06s; }
-        main > section:nth-child(3), main > div:nth-child(3) { animation-delay: .12s; }
-        main > section:nth-child(4), main > div:nth-child(4) { animation-delay: .18s; }
-        a, button, input, select, textarea, .nav-link, .btn, .btn-primary, .btn-ghost, .btn-email {
-            transition: transform .22s cubic-bezier(.22,1,.36,1), color .22s ease,
-                        background-color .22s ease, border-color .22s ease, box-shadow .22s ease;
-        }
-        .btn:hover, .btn-primary:hover, .btn-ghost:hover, .btn-email:hover,
-        button:not(:disabled):hover { transform: translateY(-2px); }
-        .nav-link:hover { transform: translateX(2px); }
-        .endpoint-card, .stat-card, .glass, .card { transition: transform .28s cubic-bezier(.22,1,.36,1), box-shadow .28s ease, border-color .28s ease; }
-        .endpoint-card:hover, .stat-card:hover, .glass:hover, .card:hover { transform: translateY(-3px); box-shadow: 0 14px 36px rgba(0,0,0,.18); }
-        @keyframes page-enter { from { opacity: 0; } to { opacity: 1; } }
-        @keyframes content-rise { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        @media (prefers-reduced-motion: reduce) {
-            :root { scroll-behavior: auto; }
-            *, *::before, *::after { animation-duration: .001ms !important; animation-iteration-count: 1 !important; transition-duration: .001ms !important; scroll-behavior: auto !important; }
-        }
     </style>
 </head>
 <body class="min-h-screen">
@@ -519,7 +496,7 @@
                     <i class="fas fa-play text-white text-xs"></i>
                 </div>
                 <div>
-                    <span class="font-bold text-sm tracking-tight text-white">ZAHID MOVIE API</span>
+                    <span class="font-bold text-sm tracking-tight text-white">RUNFLIX</span>
                     <span class="text-slate-500 text-xs ml-1 font-mono">API</span>
                 </div>
             </a>
@@ -555,15 +532,15 @@
                 <a href="/request-key" class="nav-link">
                     <span>Request Key</span>
                 </a>
-                <a href="https://YOUR-RAILWAY-DOMAIN.up.railway.app" target="_blank" class="nav-link">
+                <a href="https://api.runflix.name.ng" target="_blank" class="nav-link">
                     <span>More APIs</span>
                     <i class="fas fa-external-link-alt text-[10px] opacity-60"></i>
                 </a>
             </nav>
 
             <div class="flex items-center gap-3">
-                <a href="mailto:myweb615265@gmail.com" class="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-lg border border-edge hover:border-emerald-500/30 text-slate-400 hover:text-emerald-400 transition-all text-xs font-medium">
-                    <i class="fas fa-envelope"></i>
+                <a href="https://wa.me/+2348100785677" target="_blank" class="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-lg border border-edge hover:border-emerald-500/30 text-slate-400 hover:text-emerald-400 transition-all text-xs font-medium">
+                    <i class="fab fa-whatsapp"></i>
                     <span>Support</span>
                 </a>
                 <div class="flex items-center gap-2 px-2.5 py-1.5 rounded-lg bg-emerald-500/5 border border-emerald-500/10">
@@ -611,14 +588,14 @@
                 <i class="fas fa-key w-5 text-center text-xs"></i>
                 <span>Request API Key</span>
             </a>
-            <a href="https://YOUR-RAILWAY-DOMAIN.up.railway.app" target="_blank" class="mobile-link">
+            <a href="https://api.runflix.name.ng" target="_blank" class="mobile-link">
                 <i class="fas fa-external-link-alt w-5 text-center text-xs"></i>
                 <span>More APIs</span>
             </a>
 
-            <a href="mailto:myweb615265@gmail.com" class="mobile-link text-emerald-400">
-                <i class="fas fa-envelope w-5 text-center text-xs"></i>
-                <span>Email Support</span>
+            <a href="https://wa.me/+2348100785677" target="_blank" class="mobile-link text-emerald-400">
+                <i class="fab fa-whatsapp w-5 text-center text-xs"></i>
+                <span>WhatsApp Support</span>
             </a>
         </div>
     </header>
@@ -749,7 +726,7 @@ api-key: YOUR_KEY
                         </div>
                         <div id="activeKey" class="mt-3 inline-flex items-center gap-2 px-2.5 py-1.5 rounded-lg bg-surface border border-edge text-[11px] font-mono text-slate-400" aria-live="polite"></div>
                         <p class="mt-3 text-xs text-slate-500 leading-relaxed">
-                            Run buttons work out of the box with the shared public key <span class="font-mono text-cyan-400">zahidmovieapi</span>; its current limits are shown live in the key checker below. A saved key is stored in <span class="text-slate-300">this browser only</span> (localStorage) and is never added to copied URLs. No key yet? <a href="/request-key" class="text-cyan-400 hover:underline">Request one</a>.
+                            Run buttons work out of the box with the shared public key <span class="font-mono text-cyan-400">daratechapi</span>; its current limits are shown live in the key checker below. A saved key is stored in <span class="text-slate-300">this browser only</span> (localStorage) and is never added to copied URLs. No key yet? <a href="/request-key" class="text-cyan-400 hover:underline">Request one</a>.
                         </p>
                     </div>
 
@@ -763,7 +740,7 @@ api-key: YOUR_KEY
                         <pre class="out text-[11px] sm:text-xs leading-relaxed">{
   "status": 429,
   "success": false,
-  "creator": "Zahid dev",
+  "creator": "DaraTech",
   "error": "daily request limit reached",
   "message": "daily request limit reached",
   "code": "API_KEY_DAILY_LIMIT_EXCEEDED",
@@ -809,7 +786,7 @@ api-key: YOUR_KEY
                     </div>
                     <form id="checkForm" class="flex flex-col sm:flex-row gap-2">
                         <label for="checkInput" class="sr-only">Key to check</label>
-                        <input id="checkInput" class="field" autocomplete="off" spellcheck="false" placeholder="zahidmovieapi">
+                        <input id="checkInput" class="field" autocomplete="off" spellcheck="false" placeholder="daratechapi">
                         <button id="checkBtn" type="submit" class="btn vi"><i class="fas fa-search text-xs"></i>Check Key</button>
                     </form>
                     <div id="checkOut" class="mt-4" aria-live="polite"></div>
@@ -848,12 +825,12 @@ api-key: YOUR_KEY
                         </h3>
                         <p class="text-sm text-slate-400 mb-6">Have integration challenges or wish to request key updates? Contact our lead engineers.</p>
                         <div class="space-y-4">
-                            <a href="mailto:myweb615265@gmail.com" rel="noopener" class="flex items-center gap-3 p-3 rounded-lg border border-edge hover:border-emerald-500/30 hover:bg-emerald-500/5 transition-all group">
-                                <div class="w-8 h-8 rounded-lg bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400 shrink-0"><i class="fas fa-envelope text-sm"></i></div>
-                                <div class="min-w-0"><div class="text-sm font-semibold text-white">Email Support</div><div class="text-xs text-slate-500">Contact Zahid dev for support and API questions.</div></div>
+                            <a href="https://whatsapp.com/channel/0029Vb8esUv3GJP6ymXaNF3g" target="_blank" rel="noopener" class="flex items-center gap-3 p-3 rounded-lg border border-edge hover:border-emerald-500/30 hover:bg-emerald-500/5 transition-all group">
+                                <div class="w-8 h-8 rounded-lg bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400 shrink-0"><i class="fab fa-whatsapp text-sm"></i></div>
+                                <div class="min-w-0"><div class="text-sm font-semibold text-white">WhatsApp Channel</div><div class="text-xs text-slate-500">Release bulletins and system notices.</div></div>
                                 <i class="fas fa-arrow-right text-xs text-slate-600 group-hover:text-emerald-400 ml-auto"></i>
                             </a>
-                            <a href="mailto:myweb615265@gmail.com" rel="noopener" class="flex items-center gap-3 p-3 rounded-lg border border-edge hover:border-cyan-500/30 hover:bg-cyan-500/5 transition-all group">
+                            <a href="https://wa.me/+2348100785677" target="_blank" rel="noopener" class="flex items-center gap-3 p-3 rounded-lg border border-edge hover:border-cyan-500/30 hover:bg-cyan-500/5 transition-all group">
                                 <div class="w-8 h-8 rounded-lg bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center text-cyan-400 shrink-0"><i class="fas fa-comments text-sm"></i></div>
                                 <div class="min-w-0"><div class="text-sm font-semibold text-white">Direct Support</div><div class="text-xs text-slate-500">Keys, limits and integration help.</div></div>
                                 <i class="fas fa-arrow-right text-xs text-slate-600 group-hover:text-cyan-400 ml-auto"></i>
@@ -867,7 +844,7 @@ api-key: YOUR_KEY
                             Quick Integration Workflow
                         </h3>
                         <div class="space-y-3">
-                            <div class="flex items-start gap-3"><div class="step-number">1</div><div class="min-w-0"><div class="text-sm font-semibold text-white">Get a key</div><div class="text-xs text-slate-500">Use <code class="font-mono text-cyan-400 text-[11px]">zahidmovieapi</code> to explore, then request your own at <code class="font-mono text-cyan-400 text-[11px]">/request-key</code>.</div></div></div>
+                            <div class="flex items-start gap-3"><div class="step-number">1</div><div class="min-w-0"><div class="text-sm font-semibold text-white">Get a key</div><div class="text-xs text-slate-500">Use <code class="font-mono text-cyan-400 text-[11px]">daratechapi</code> to explore, then request your own at <code class="font-mono text-cyan-400 text-[11px]">/request-key</code>.</div></div></div>
                             <div class="flex items-start gap-3"><div class="step-number">2</div><div class="min-w-0"><div class="text-sm font-semibold text-white">Discover titles</div><div class="text-xs text-slate-500">Homepage, trending, search or filter to find an ID.</div></div></div>
                             <div class="flex items-start gap-3"><div class="step-number">3</div><div class="min-w-0"><div class="text-sm font-semibold text-white">Fetch details</div><div class="text-xs text-slate-500">Info, seasons and episodes for the selected title.</div></div></div>
                             <div class="flex items-start gap-3"><div class="step-number">4</div><div class="min-w-0"><div class="text-sm font-semibold text-white">Resolve sources</div><div class="text-xs text-slate-500">Read streamUrl or downloadUrl directly, or choose from the results quality list.</div></div></div>
@@ -884,19 +861,19 @@ api-key: YOUR_KEY
                         <div class="w-7 h-7 rounded-md bg-gradient-to-br from-cyan-500 to-violet-500 flex items-center justify-center">
                             <i class="fas fa-play text-white text-[8px]"></i>
                         </div>
-                        <span class="font-bold text-sm text-white">ZAHID MOVIE API <span class="text-slate-500 font-normal">Movies API</span></span>
+                        <span class="font-bold text-sm text-white">RUNFLIX <span class="text-slate-500 font-normal">Movies API</span></span>
                     </div>
                     <div class="flex flex-wrap justify-center items-center gap-x-6 gap-y-2 text-xs font-semibold text-slate-500 uppercase tracking-wider">
                         <a href="/" class="hover:text-white transition-colors">Home</a>
                         <a href="/docs" class="hover:text-white transition-colors">Documentation</a>
-                        <a href="https://YOUR-RAILWAY-DOMAIN.up.railway.app" target="_blank" rel="noopener" class="hover:text-white transition-colors">More APIs</a>
+                        <a href="https://api.runflix.name.ng" target="_blank" rel="noopener" class="hover:text-white transition-colors">More APIs</a>
                     </div>
                     <div class="flex items-center gap-3">
-                        <a href="mailto:myweb615265@gmail.com" rel="noopener" aria-label="Email support" class="w-8 h-8 rounded-lg bg-panel border border-edge flex items-center justify-center text-slate-400 hover:text-emerald-400 hover:border-emerald-500/30 transition-all"><i class="fas fa-envelope text-sm"></i></a>
-                        <a href="https://YOUR-RAILWAY-DOMAIN.up.railway.app" target="_blank" rel="noopener" aria-label="More APIs" class="w-8 h-8 rounded-lg bg-panel border border-edge flex items-center justify-center text-slate-400 hover:text-cyan-400 hover:border-cyan-500/30 transition-all"><i class="fas fa-external-link-alt text-sm"></i></a>
+                        <a href="https://wa.me/+2348100785677" target="_blank" rel="noopener" aria-label="WhatsApp" class="w-8 h-8 rounded-lg bg-panel border border-edge flex items-center justify-center text-slate-400 hover:text-emerald-400 hover:border-emerald-500/30 transition-all"><i class="fab fa-whatsapp text-sm"></i></a>
+                        <a href="https://api.runflix.name.ng" target="_blank" rel="noopener" aria-label="More APIs" class="w-8 h-8 rounded-lg bg-panel border border-edge flex items-center justify-center text-slate-400 hover:text-cyan-400 hover:border-cyan-500/30 transition-all"><i class="fas fa-external-link-alt text-sm"></i></a>
                     </div>
                 </div>
-                <div class="mt-6 text-center"><p class="text-[11px] text-slate-600 font-mono">POWERED BY ZAHID TECH</p></div>
+                <div class="mt-6 text-center"><p class="text-[11px] text-slate-600 font-mono">Crafted by DaraTech</p></div>
             </footer>
         </div>
     </main>
@@ -937,7 +914,7 @@ api-key: YOUR_KEY
 
         (function () {
             'use strict';
-            const PUBLIC_KEY = 'zahidmovieapi', LS = 'zahid_movieapi_key', API = '/api/v3', ORIGIN = location.origin;
+            const PUBLIC_KEY = 'daratechapi', LS = 'runflix_movieapi_key', API = '/api/v3', ORIGIN = location.origin;
             const $ = s => document.querySelector(s);
 
             function el(tag, attrs, ...kids) {
@@ -961,8 +938,8 @@ api-key: YOUR_KEY
             function paintKey() {
                 const k = activeKey()===PUBLIC_KEY?'':userKey(), a = $('#activeKey'); a.textContent = '';
                 const personal=activeKey()!==PUBLIC_KEY,contact=$('#keyContactLink');
-                contact.href=personal?'mailto:myweb615265@gmail.com?subject=Movie%20Api%20key%20support':'/request-key';
-                contact.textContent=personal?'Email support for upgrades or limit increases':'Request your own key';
+                contact.href=personal?'https://wa.me/2348100785677?text=Please%20help%20me%20upgrade%20my%20RUNFLIX%20MovieAPI%20key.':'/request-key';
+                contact.textContent=personal?'Upgrade or increase limits on WhatsApp':'Request your own key';
                 contact.target=personal?'_blank':'_self';contact.rel='noopener';
                 a.append(el('span', { class: 'w-1.5 h-1.5 rounded-full ' + (k ? 'bg-emerald-500' : 'bg-amber-400') }),
                     k ? ('Using saved key ' + k.slice(0, 4) + '...' + k.slice(-3)) : ('Using public key ' + PUBLIC_KEY));
