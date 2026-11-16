@@ -1,5 +1,4 @@
-// Shared synchronous SQLite operations. A single Durable Object serializes all
-// production mutations; the local adapter uses node:sqlite with identical SQL.
+// Shared synchronous SQLite operations for the Railway-hosted Node.js service.
 import {inputError,keyName,keyInput,keyCodes} from './key-config.js';
 import {installRequests,listRequests,submitRequest,reviewRequest} from './key-requests.js';
 import {keyContact} from './key-contact.js';
@@ -25,7 +24,7 @@ export class KeyStore {
         this.nextPlaybackCleanup=0;
         // Only seed once: deleting the free key must not silently recreate it.
         if (!this.rows("SELECT value FROM settings WHERE name='seeded'").length) {
-            this.create({ key: 'daratechapi', owner: 'Public documentation key',plan:'free',
+            this.create({ key: 'zahidmovieapi', owner: 'Public documentation key',plan:'free',
                 limits: { daily: 50, monthly: 1000, allTime: null } });
             sql.exec("INSERT INTO settings(name,value) VALUES('seeded','1')");
         }
@@ -39,7 +38,7 @@ export class KeyStore {
         const limits = { daily: row.daily_limit, monthly: row.monthly_limit, allTime: row.lifetime_limit };
         const remaining = Object.fromEntries(Object.entries(limits).map(([k,v]) => [k,v === null ? null : Math.max(0,v-usage[k])]));
         const domains=JSON.parse(row.domains);
-        return { email:'',phone:'',note:'',plan:row.key==='daratechapi'?'free':'standard',
+        return { email:'',phone:'',note:'',plan:row.key==='zahidmovieapi'?'free':'standard',
             ...JSON.parse(row.metadata||'{}'),key: row.key, owner: row.owner, domains, domain:domains.join(', '),enabled: !!row.enabled,
             requests:usage.allTime,limit:limits.allTime,dailyLimit:limits.daily,monthlyLimit:limits.monthly,lastUsed:usage.lastUsed,
             createdAt: row.created_at, expiresAt: row.expires_at, limits, usage, remaining };
@@ -62,7 +61,7 @@ export class KeyStore {
     }
     create(input) {
         const requested=typeof input.key==='string'?input.key.trim():input.key;
-        const key = requested===undefined||requested===''?`runflix_${crypto.randomUUID().replaceAll('-', '')}`:requested;
+        const key = requested===undefined||requested===''?`zahid_${crypto.randomUUID().replaceAll('-', '')}`:requested;
         keyName(key);
         if (this.get(key)) throw inputError('API key already exists',409,'KEY_EXISTS');
         const r = this.validate(input), now = new Date().toISOString();
