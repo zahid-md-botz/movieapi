@@ -568,7 +568,7 @@ function err(res, message, status = 500) {
 }
 
 function serveFile(filename, res) {
-    const filePath = path.join(__dirname, filename);
+    const filePath = path.join(__dirname, "public", filename);
     if (!fs.existsSync(filePath)) return err(res, `File not found: ${filename}`, 404);
     const ext = path.extname(filename);
     const contentType = ext === ".html" ? "text/html" : "application/json";
@@ -672,13 +672,13 @@ for (const [route, file] of Object.entries(sampleFiles)) {
 
 // ─── Static HTML pages ─────────────────────────────────────────────────────────
 app.get("/request-key", (req, res) => {
-    const file = path.join(__dirname, "request-key.html");
+    const file = path.join(__dirname, "public", "request-key.html");
     if (fs.existsSync(file)) return res.sendFile(file);
     res.status(404).send("request-key.html not found");
 });
 
 app.get("/try", (req, res) => {
-    const file = path.join(__dirname, "try.html");
+    const file = path.join(__dirname, "public", "try.html");
     if (fs.existsSync(file)) return res.sendFile(file);
     res.status(404).send("try.html not found");
 });
@@ -701,7 +701,7 @@ app.post("/anilist-proxy", async (req, res) => {
 });
 
 // ─── Changelog helpers ─────────────────────────────────────────────────────────
-const CHANGELOG_FILE = path.join(__dirname, "changelog.json");
+const CHANGELOG_FILE = path.join(__dirname, "public", "changelog.json");
 function readChangelog() {
     try { return JSON.parse(fs.readFileSync(CHANGELOG_FILE, "utf8")); }
     catch { return []; }
