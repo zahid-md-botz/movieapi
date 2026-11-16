@@ -5,4 +5,4 @@ Disallow: /debug-logs
 Disallow: /stats
 Disallow: /api/
 
-Sitemap: https://YOUR-RAILWAY-DOMAIN.up.railway.app/sitemap.xml
+Sitemap: https://movieapi.runflix.name.ng/sitemap.xml
