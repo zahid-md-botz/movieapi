@@ -1,10 +1,9 @@
 import { DatabaseSync } from 'node:sqlite';
 import { mkdirSync } from 'node:fs';
-import { resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { KeyStore } from './key-store.js';
 
-const dir = resolve(process.env.DATA_DIR || fileURLToPath(new URL('../.data/', import.meta.url)));
+const dir = fileURLToPath(new URL('../.data/', import.meta.url));
 mkdirSync(dir, {recursive:true});
 const db = new DatabaseSync(`${dir}/keys.sqlite`);
 // Install the busy handler before changing journal mode: switching to WAL can
