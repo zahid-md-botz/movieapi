@@ -5,21 +5,11 @@ import json
 import os
 from pathlib import Path
 import sys
-import types
 import unittest
-import zipfile
 
 
 os.environ.setdefault("RELAY_SECRET", "unit-test-relay-secret")
-ROOT = Path(__file__).resolve().parents[2]
-sys.path.insert(0, str(ROOT / "movieapi" / "media-transport"))
 import curl_transport  # noqa: E402
-
-engine_module = types.ModuleType("engine")
-with zipfile.ZipFile(ROOT / "attached_assets" / "provider_(1)_1792978236105.zip") as archive:
-    source = archive.read("provider/engine.py").decode("utf-8")
-exec(compile(source, "engine.py", "exec"), engine_module.__dict__)
-sys.modules["engine"] = engine_module
 
 import server  # noqa: E402
 from cryptography.hazmat.primitives.ciphers.aead import AESGCM  # noqa: E402
