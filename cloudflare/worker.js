@@ -48,6 +48,11 @@ function requestHeaders(request, data) {
     if (typeof value === 'string' && value.length <= 4096 && !/[\r\n]/.test(value)) headers.set(name, value);
   }
   headers.set('Accept-Encoding', 'identity');
+  if (!headers.has('Accept')) headers.set('Accept', 'video/mp4,video/webm,application/octet-stream;q=0.9,*/*;q=0.8');
+  if (!headers.has('Accept-Language')) headers.set('Accept-Language', 'en-US,en;q=0.9');
+  if (!headers.has('Sec-Fetch-Dest')) headers.set('Sec-Fetch-Dest', 'video');
+  if (!headers.has('Sec-Fetch-Mode')) headers.set('Sec-Fetch-Mode', 'no-cors');
+  if (!headers.has('Sec-Fetch-Site')) headers.set('Sec-Fetch-Site', 'cross-site');
   const range = request.headers.get('Range');
   const ifRange = request.headers.get('If-Range');
   if (range) headers.set('Range', range);
