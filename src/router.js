@@ -328,7 +328,8 @@ async function sourceResponse(data,key,url,env,p) {
     const results=data.results.map(({headers,url:raw,...s})=>{
         safeMediaUrl(raw);
         const token=randomBytes(18).toString('base64url');
-        const links=playbackLinks(url.origin,token);
+        const edgeOrigin=env.PUBLIC_BASE_URL&&env.EDGE_SHARED_SECRET?env.PUBLIC_BASE_URL:null;
+        const links=playbackLinks(url.origin,token,edgeOrigin);
         const format=mediaFormat({...s,url:raw});
         const filename=downloadFilename(data.title,p.season,p.episode,s.quality,format);
         // HLS/DASH are manifests, not a single downloadable video file. Keep

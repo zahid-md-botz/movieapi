@@ -1,0 +1,10 @@
+name = "zahid-movieapi-edge"
+main = "cloudflare/worker.js"
+compatibility_date = "2026-11-17"
+workers_dev = true
+
+[vars]
+ORIGIN_URL = "https://movieapi-production-59c04909.up.railway.app"
+
+[observability]
+enabled = true

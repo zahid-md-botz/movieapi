@@ -32,6 +32,17 @@ export function installModern(app) {
                 const data=open(req.body.ticket,process.env.ADMIN_SECRET);
                 return send(await media(data.url,data.headers,req.headers.range,req.body.method==='HEAD'?'HEAD':'GET',req.headers['if-range']),res);
             }
+            if(req.path==='/internal/edge-media') {
+                if(!secretEqual(req.headers['x-edge-secret'],process.env.EDGE_SHARED_SECRET))
+                    return send(json({message:'Unauthorized'},401),res);
+                if(req.method!=='POST') return send(json({message:'Use POST'},405),res);
+                const token=String(req.body?.token||'');
+                if(!/^[A-Za-z0-9_-]{24}$/.test(token)) return send(json({message:'Invalid playback token'},400),res);
+                const {localLedger}=await import('./local-ledger.js');
+                const result=localLedger.dispatch({action:'playback-get',token});
+                if(result.status!==200) return send(json({message:result.message},result.status),res);
+                return send(json({data:result.data}),res);
+            }
             if(process.env.NODE_ENV==='production' && (
                 req.path.startsWith('/debug/') || req.path.startsWith('/try-') ||
                 req.path.startsWith('/sample-') || req.path.startsWith('/internal/')
@@ -42,6 +53,8 @@ export function installModern(app) {
                 ...(!['GET','HEAD'].includes(req.method)?{body:JSON.stringify(req.body||{})}:{})});
             const runtime={
                 ADMIN_SECRET:process.env.ADMIN_SECRET,
+                EDGE_SHARED_SECRET:process.env.EDGE_SHARED_SECRET,
+                PUBLIC_BASE_URL:process.env.PUBLIC_BASE_URL,
                 STORAGE_LABEL:'railway-volume-sqlite',
                 ledger:async data=>{
                     try {

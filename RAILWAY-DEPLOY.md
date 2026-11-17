@@ -2,7 +2,7 @@
 
 ## Architecture
 
-One Railway service runs the website, API, MovieBox metadata engine, SQLite key/quota/playback store, and a private localhost Python media relay. The Node API handles routes and signed download tickets. The relay uses `curl-cffi` with Chrome impersonation and HTTP/2 for upstream media, preserves byte ranges, follows only allowlisted CDN redirects, and streams with bounded memory (8 concurrent streams, 8 queued chunks per transfer).
+One Railway service runs the website, API, MovieBox metadata engine, SQLite key/quota/playback store, and a private localhost Python media relay. A Cloudflare Worker is the public media edge: it resolves short playback tokens through Railway and fetches signed CDN media from Cloudflare instead of Railway. The Node API handles routes and signed download tickets. The relay remains available as a direct fallback and for local testing.
 
 ## Deploy
 
@@ -11,11 +11,13 @@ One Railway service runs the website, API, MovieBox metadata engine, SQLite key/
 3. Set Railway variables:
    - `ADMIN_SECRET`: unique random value, at least 32 characters.
    - `DATA_DIR`: `/app/.data`.
+   - `EDGE_SHARED_SECRET`: a different random value, exactly matching the Cloudflare Worker secret.
+   - `PUBLIC_BASE_URL`: the Cloudflare Worker HTTPS URL.
    - `SUPPORT_EMAIL`: `myweb615265@gmail.com` (optional).
 4. Attach a Railway Volume mounted at `/app/.data`. It stores API keys, quotas and playback sessions.
 5. Keep one replica for the SQLite volume setup, deploy, and retain the existing Railway domain.
 
-No separate Python service, Cloudflare Worker, `MOVIEBOX_PROXY_URL`, or public proxy URL is required. The Python media relay runs inside the same Railway container and listens only on `127.0.0.1:8765`.
+Deploy the Worker using [`CLOUDFLARE-DEPLOY.md`](CLOUDFLARE-DEPLOY.md). The Python media relay runs inside the same Railway container and listens only on `127.0.0.1:8765`; the Worker is preferred for public playback when `PUBLIC_BASE_URL` and `EDGE_SHARED_SECRET` are configured.
 
 ## Download and streaming endpoints
 
@@ -47,6 +49,8 @@ A healthy API health-check does not guarantee that MovieBox currently offers a p
 |---|---|---|
 | `ADMIN_SECRET` | Yes | Protects admin operations and signs playback tickets. |
 | `DATA_DIR` | Yes | Persistent SQLite directory; use `/app/.data`. |
+| `EDGE_SHARED_SECRET` | With Cloudflare | Shared secret used only by the Worker token resolver. |
+| `PUBLIC_BASE_URL` | With Cloudflare | Worker HTTPS origin used for generated stream/download links. |
 | `SUPPORT_EMAIL` | No | Public support contact. |
 | `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASS`, `SMTP_FROM` | No | Optional email delivery configuration. |
 | `MEDIA_RELAY_PORT` | No | Private relay port; default `8765`. |

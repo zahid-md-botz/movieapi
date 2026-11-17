@@ -21,6 +21,8 @@ export function attachmentHeader(filename) {
     const utf8=encodeURIComponent(safe).replace(/['()*]/g,c=>'%'+c.charCodeAt(0).toString(16).toUpperCase());
     return `attachment; filename="${ascii}"; filename*=UTF-8''${utf8}`;
 }
-export function playbackLinks(origin,token) {
+export function playbackLinks(origin,token,edgeOrigin=null) {
+    const base=String(edgeOrigin||'').replace(/\/$/,'');
+    if(base) return {streamUrl:`${base}/media/${token}`,downloadUrl:`${base}/media/${token}?download=1`};
     return {streamUrl:`${origin}/api/v3/stream/${token}`,downloadUrl:`${origin}/api/v3/download/${token}`};
 }
