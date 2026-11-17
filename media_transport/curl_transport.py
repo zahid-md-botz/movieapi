@@ -63,9 +63,11 @@ class CurlStreamResponse:
                 # A worker thread reuses its handle; reset method/options/callbacks
                 # before each new request so a prior HEAD cannot poison the next GET.
                 curl.reset()
-            # Prefer the reference project's HTTP/2 path, then retry a connection
-            # failure once over HTTP/1.1. Do not retry an HTTP response such as 403:
-            # that is a real upstream decision, not a transport negotiation error.
+            # Prefer the reference project's HTTP/2 path, then retry once over
+            # HTTP/1.1. Some CDN edges return 421/425/426 when their first ALPN
+            # negotiation lands on an edge that wants the other HTTP version;
+            # those statuses are transport negotiation failures, not final media
+            # decisions. Do not retry ordinary upstream responses such as 403.
             versions = (CurlHttpVersion.V2_0, CurlHttpVersion.V1_1)
             try:
                 for attempt, version in enumerate(versions):
@@ -88,6 +90,9 @@ class CurlStreamResponse:
                         if method == "HEAD":
                             curl.setopt(CurlOpt.NOBODY, 1)
                         curl.perform()
+                        if self.status_code in {421, 425, 426} and attempt < len(versions) - 1:
+                            self.error = RuntimeError(f"Retrying media request after HTTP {self.status_code}")
+                            continue
                         if self.status_code:
                             self.error = None
                             break
