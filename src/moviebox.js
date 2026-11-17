@@ -149,6 +149,12 @@ export class MovieBox {
     async sources(id,p) {
         const se=Number(p.season||0), ep=Number(p.episode||0);
         const info=await this.call('info',{id});
+        // MovieBox returns HTTP 200 with an empty play payload when a series is
+        // queried without an episode. Do not fall through to the mobile
+        // endpoint (which now commonly answers 401) and expose that as a 502.
+        if (Number(info.subjectType) === 2 && (!se || !ep)) {
+            throw new UpstreamError('Season and episode are required for series titles',400);
+        }
         const detailPath=info.detailPath || String(info.detailUrl||'').split('/').pop() || '';
         await this.bootstrap();
         const results=[], seen=new Set();
@@ -158,7 +164,7 @@ export class MovieBox {
             seen.add(url);
             const q=String(s.resolutions || s.resolution || '');
             results.push({id:String(s.id||s.resourceId||''),url,quality:q.endsWith('p')?q:q+'p',
-                qualityValue:parseInt(q)||0,format:(()=>{const declared=String(s.format||'').toLowerCase();const path=String(url).split('?')[0].toLowerCase();if(declared.includes('dash')||declared==='mpd'||path.endsWith('.mpd'))return 'DASH';if(declared.includes('hls')||declared==='m3u8'||path.endsWith('.m3u8'))return 'HLS';if(declared.includes('webm')||path.endsWith('.webm'))return 'WEBM';if(declared==='ts'||path.endsWith('.ts'))return 'TS';return s.format||'MP4';})(),
+                qualityValue:parseInt(q)||0,format:s.format||(/\.mpd(?:\?|$)/.test(url)?'DASH':'MP4'),
                 size:s.size||null,duration:s.duration||null,codec:s.codecName||null,
                 browserCompatible:!/(hevc|h265|hvc1|hev1)/i.test(s.codecName||''),
                 requireMemberType:s.requireMemberType??0,
@@ -178,8 +184,18 @@ export class MovieBox {
             }catch{}
         }
         if(!results.length) {
-            const d=await this.native(`/wefeed-mobile-bff/subject-api/play-info?subjectId=${id}&se=${se}&ep=${ep}`);
-            for(const s of d.streams || []) add(s,'https://api3.aoneroom.com');
+            try {
+                const d=await this.native(`/wefeed-mobile-bff/subject-api/play-info?subjectId=${id}&se=${se}&ep=${ep}`);
+                for(const s of d.streams || []) add(s,'https://api3.aoneroom.com');
+            } catch (error) {
+                // The legacy mobile fallback is not available in every region;
+                // if web playback already returned a valid empty payload, this
+                // is a missing source, not an API/server outage.
+                if (error instanceof UpstreamError && /HTTP (401|403|404)/.test(error.message)) {
+                    throw new UpstreamError('MovieBox returned no playable sources for this title/episode',404);
+                }
+                throw error;
+            }
         }
         if(!results.length) throw new UpstreamError('MovieBox returned no playable sources for this title/episode',404);
         return {title:info.title,results:results.sort((a,b)=>b.qualityValue-a.qualityValue),subtitles:[],audioTracks:info.dubs || []};

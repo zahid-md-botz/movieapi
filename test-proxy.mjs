@@ -130,3 +130,15 @@ test('MovieBox source signing uses the injected transport',async()=>{
     assert.equal(result.results[0].headers.Cookie,undefined);
     assert.equal(requests.length,2);
 });
+
+test('series sources require season and episode instead of leaking an upstream 502',async()=>{
+    const engine=new MovieBox(async(input)=>{
+        if(String(input).includes('/home?'))return new Response('{}',{headers:{'x-user':JSON.stringify({token:'fixture'})}});
+        if(String(input).includes('/detail?'))return Response.json({data:{subject:{subjectId:'123456',subjectType:2,title:'Fixture Series'}}});
+        throw new Error('The play endpoint must not be called without an episode');
+    });
+    await assert.rejects(()=>engine.sources('123456',{}),{
+        status:400,
+        message:'Season and episode are required for series titles'
+    });
+});

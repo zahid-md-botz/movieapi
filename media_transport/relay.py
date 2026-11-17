@@ -115,6 +115,13 @@ async def fetch(request: Request):
         if_range_value = request.headers.get("if-range")
         response = await run_in_threadpool(open_upstream, method, url, headers, range_value, if_range_value)
         out_headers = {k: v for k, v in response.headers.items() if k.lower() in FORWARDED_HEADERS}
+        # A CDN may close a long full-body response before delivering the
+        # advertised length. Do not let h11 raise "Too little data for declared
+        # Content-Length" after headers have already reached the browser. Range
+        # responses retain their length because the requested byte window is
+        # bounded and is required for seeking.
+        if method == "GET" and response.status_code == 200:
+            out_headers.pop("content-length", None)
         status = response.status_code
         if method == "HEAD":
             response.close()

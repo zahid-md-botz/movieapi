@@ -400,6 +400,22 @@
             :root { scroll-behavior: auto; }
             *, *::before, *::after { animation-duration: .001ms !important; animation-iteration-count: 1 !important; transition-duration: .001ms !important; scroll-behavior: auto !important; }
         }
+
+        .movie-shelf { content-visibility: auto; contain-intrinsic-size: 700px; }
+        .movie-card { position: relative; overflow: hidden; background: rgba(15,23,42,.72); border: 1px solid rgba(148,163,184,.12); border-radius: 1rem; transition: transform .28s cubic-bezier(.22,1,.36,1), border-color .28s ease, box-shadow .28s ease; }
+        .movie-card:hover { transform: translateY(-6px); border-color: rgba(34,211,238,.45); box-shadow: 0 18px 45px rgba(8,15,35,.42), 0 0 0 1px rgba(34,211,238,.08); }
+        .movie-poster { aspect-ratio: 2 / 3; width: 100%; object-fit: cover; background: linear-gradient(135deg,#111827,#0f172a); transition: transform .5s cubic-bezier(.22,1,.36,1), filter .35s ease; }
+        .movie-card:hover .movie-poster { transform: scale(1.045); filter: saturate(1.12); }
+        .movie-poster-wrap { position: relative; overflow: hidden; }
+        .movie-poster-wrap::after { content: ''; position: absolute; inset: 45% 0 0; background: linear-gradient(transparent, rgba(2,6,23,.92)); pointer-events: none; }
+        .movie-actions { position: absolute; inset: auto .65rem .65rem; z-index: 2; display: flex; gap: .45rem; opacity: 0; transform: translateY(8px); transition: opacity .25s ease, transform .25s ease; }
+        .movie-card:hover .movie-actions, .movie-card:focus-within .movie-actions { opacity: 1; transform: translateY(0); }
+        .movie-action { min-height: 34px; flex: 1; border-radius: .6rem; font-size: .7rem; font-weight: 700; display: inline-flex; align-items: center; justify-content: center; gap: .35rem; backdrop-filter: blur(12px); }
+        .movie-action-play { background: rgba(34,211,238,.92); color: #082f49; }
+        .movie-action-download { background: rgba(15,23,42,.88); color: #e2e8f0; border: 1px solid rgba(148,163,184,.25); }
+        .movie-skeleton { min-height: 320px; border-radius: 1rem; background: linear-gradient(110deg, rgba(30,41,59,.7) 8%, rgba(51,65,85,.45) 18%, rgba(30,41,59,.7) 33%); background-size: 200% 100%; animation: shelf-shimmer 1.35s linear infinite; }
+        @keyframes shelf-shimmer { to { background-position-x: -200%; } }
+        @media (max-width: 640px) { .movie-actions { opacity: 1; transform: none; } .movie-action { min-height: 32px; } }
     </style>
     </head>
     <body class="min-h-screen">
@@ -760,6 +776,28 @@
                 </div>
             </section>
 
+
+            <!-- Movie discovery shelf -->
+            <section id="movieShelf" class="movie-shelf mb-20">
+                <div class="flex flex-col lg:flex-row lg:items-end justify-between gap-5 mb-6">
+                    <div>
+                        <div class="flex items-center gap-3 mb-3"><span class="mono-label tag-cyan px-2.5 py-1 rounded-full">DISCOVER</span><span class="text-xs text-slate-500 font-mono">fresh sources on every click</span></div>
+                        <h2 class="text-3xl sm:text-4xl font-black text-white tracking-tight">Movies for tonight</h2>
+                        <p class="text-sm text-slate-400 mt-2">Browse posters, search any title, then play or download from the same card.</p>
+                    </div>
+                    <div class="w-full lg:w-[430px] flex gap-2">
+                        <label class="relative flex-1"><i class="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 text-sm"></i><input id="movieSearch" class="w-full h-11 rounded-xl bg-surface/80 border border-edge pl-9 pr-3 text-sm text-white outline-none focus:border-cyan-400/60 focus:ring-2 focus:ring-cyan-400/10" placeholder="Search movies or series..." autocomplete="off"></label>
+                        <button id="movieSearchBtn" class="btn-primary h-11 px-4 rounded-xl text-sm font-bold inline-flex items-center gap-2"><i class="fas fa-search"></i><span>Search</span></button>
+                    </div>
+                </div>
+                <div class="flex flex-wrap items-center gap-3 mb-5">
+                    <button id="movieTrendingBtn" class="text-xs font-semibold text-cyan-300 bg-cyan-400/10 border border-cyan-400/20 rounded-full px-3 py-1.5 hover:bg-cyan-400/20">Trending</button>
+                    <span id="movieStatus" class="text-xs text-slate-500">Loading catalog...</span>
+                    <label class="ml-auto flex items-center gap-2 text-[11px] text-slate-500"><span>API key</span><input id="movieApiKey" class="w-36 sm:w-48 h-8 px-2.5 rounded-lg bg-void border border-edge text-[11px] text-slate-300 outline-none focus:border-cyan-400/50" value="zahidmovieapi" type="password" autocomplete="off"></label>
+                </div>
+                <div id="movieGrid" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 xl:grid-cols-6 gap-4" aria-live="polite"></div>
+            </section>
+
             <!-- Quick Integration Workflow -->
             <section class="mb-20">
                 <div class="flex items-center gap-3 mb-6">
@@ -1117,6 +1155,60 @@ url  = src["results"]["sources"][0]["url"]   <span class="text-slate-500"># stre
         </footer>
 
         <script>
+
+            // Movie discovery shelf: metadata is public-demo-key backed, while every
+            // play/download click requests a fresh six-hour signed source URL.
+            const MOVIE_DEMO_KEY = 'zahidmovieapi';
+            const movieGrid = document.getElementById('movieGrid');
+            const movieStatus = document.getElementById('movieStatus');
+            const movieSearch = document.getElementById('movieSearch');
+            const movieApiKey = document.getElementById('movieApiKey');
+            const movieKey = () => (movieApiKey.value || MOVIE_DEMO_KEY).trim();
+            const movieHeaders = () => ({ Authorization: `Bearer ${movieKey()}`, Accept: 'application/json' });
+            const safeText = value => String(value || '').replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+            const posterFor = item => item?.cover?.url || item?.thumbnail || item?.poster || '';
+            const apiGet = async path => { const r = await fetch(path, { headers: movieHeaders() }); const data = await r.json().catch(() => ({})); if (!r.ok) throw new Error(data.message || 'API request failed'); return data; };
+            function shelfSkeleton() { movieGrid.innerHTML = Array.from({length: 12}, () => '<div class="movie-skeleton"></div>').join(''); }
+            function renderMovies(items) {
+                if (!items.length) { movieGrid.innerHTML = '<div class="col-span-full panel rounded-xl p-10 text-center text-sm text-slate-500">No titles found. Try another search.</div>'; return; }
+                movieGrid.innerHTML = items.map((item, index) => {
+                    const title = safeText(item.title || 'Untitled');
+                    const poster = posterFor(item);
+                    const id = safeText(item.subjectId || item.id || '');
+                    const meta = safeText(item.releaseDate || item.genre || 'Movie');
+                    return `<article class="movie-card group" data-id="${id}" data-title="${title}" tabindex="0">
+                        <div class="movie-poster-wrap"><img class="movie-poster" src="${safeText(poster)}" alt="${title} poster" loading="${index < 6 ? 'eager' : 'lazy'}" onerror="this.style.opacity='.15'">
+                            <div class="absolute left-2.5 top-2.5 z-2 text-[9px] font-bold uppercase tracking-wider rounded-full px-2 py-1 bg-black/55 text-cyan-200 border border-white/10">${meta}</div>
+                            <div class="movie-actions"><button class="movie-action movie-action-play" data-action="play"><i class="fas fa-play text-[10px]"></i>Play</button><button class="movie-action movie-action-download" data-action="download"><i class="fas fa-download text-[10px]"></i>Download</button></div>
+                        </div><div class="p-3"><h3 class="text-sm font-bold text-white line-clamp-2 leading-snug">${title}</h3><p class="text-[10px] text-slate-500 mt-1 truncate">${safeText(item.countryName || item.genre || 'Movie')}</p></div>
+                    </article>`;
+                }).join('');
+            }
+            async function loadMovies(path='/api/v3/trending?page=1&perPage=24') {
+                shelfSkeleton(); movieStatus.textContent = 'Loading titles...';
+                try { const data = await apiGet(path); const payload = data.results || data; const items = Array.isArray(payload?.items) ? payload.items : []; renderMovies(items); movieStatus.textContent = `${items.length} titles`; }
+                catch (e) { movieGrid.innerHTML = `<div class="col-span-full panel rounded-xl p-8 text-center text-sm text-rose-300">${safeText(e.message)}<br><span class="text-slate-500 text-xs">Check the API key field above.</span></div>`; movieStatus.textContent = 'Catalog unavailable'; }
+            }
+            async function searchMovies() { const q = movieSearch.value.trim(); if (!q) return loadMovies(); loadMovies(`/api/v3/search/${encodeURIComponent(q)}?page=1&perPage=24`); }
+            async function openSource(card, action) {
+                const id = card.dataset.id, title = card.dataset.title || 'Movie'; if (!id) return;
+                const buttons = card.querySelectorAll('button'); buttons.forEach(b => b.disabled = true); movieStatus.textContent = `Preparing ${title}...`;
+                const popup = window.open('about:blank', '_blank');
+                try { const data = await apiGet(`/api/v3/sources/${encodeURIComponent(id)}`); const url = action === 'play' ? (data.streamUrl || data.results?.streamUrl) : (data.downloadUrl || data.results?.downloadUrl);
+                    if (!url) throw new Error(action === 'play' ? 'No direct MP4/WebM stream is available for this title.' : 'No direct downloadable file is available for this title.');
+                    if (popup) popup.location.href = url; else window.location.href = url;
+                    movieStatus.textContent = `${action === 'play' ? 'Playing' : 'Download started'}: ${title}`;
+                } catch (e) { if (popup) popup.close(); movieStatus.textContent = e.message; alert(e.message); } finally { buttons.forEach(b => b.disabled = false); }
+            }
+            movieGrid.addEventListener('click', e => { const button = e.target.closest('button[data-action]'); if (button) openSource(button.closest('.movie-card'), button.dataset.action); });
+            document.getElementById('movieSearchBtn').addEventListener('click', searchMovies);
+            document.getElementById('movieTrendingBtn').addEventListener('click', () => { movieSearch.value = ''; loadMovies(); });
+            movieSearch.addEventListener('keydown', e => { if (e.key === 'Enter') searchMovies(); });
+            movieApiKey.addEventListener('change', () => { localStorage.setItem('zahid_movie_api_key', movieApiKey.value.trim()); loadMovies(); });
+            movieApiKey.value = localStorage.getItem('zahid_movie_api_key') || MOVIE_DEMO_KEY;
+            loadMovies();
+
+
             // Mobile panel toggle
             const menuBtn = document.getElementById("menuBtn");
             const mobilePanel = document.getElementById("mobilePanel");

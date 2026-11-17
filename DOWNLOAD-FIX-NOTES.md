@@ -1,5 +1,5 @@
 # Download / streaming transport patch
-..
+
 ## What changed
 
 - Kept the existing Node API routes, MovieBox metadata engine, API-key/quota SQLite store, signed playback tickets, website and admin UI.

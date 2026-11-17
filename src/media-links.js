@@ -3,11 +3,8 @@ const clean=(value,fallback,max=120)=>String(value||fallback)
 
 export function mediaFormat(source) {
     const format=String(source.format||'').toLowerCase();
-    const path=String(source.url||'').split('?')[0].toLowerCase();
-    if(format.includes('dash')||format==='mpd'||path.endsWith('.mpd'))return 'dash';
-    if(format.includes('hls')||format==='m3u8'||path.endsWith('.m3u8'))return 'hls';
-    if(format.includes('webm')||path.endsWith('.webm'))return 'webm';
-    if(format==='ts'||path.endsWith('.ts'))return 'ts';
+    if(format==='dash'||/\.mpd(?:\?|$)/i.test(source.url||''))return 'dash';
+    if(format==='hls'||/\.m3u8(?:\?|$)/i.test(source.url||''))return 'hls';
     return format||'mp4';
 }
 export function resolution(source) {

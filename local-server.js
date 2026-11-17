@@ -8,7 +8,6 @@ import crypto from "crypto";
 import axios from "axios";
 import * as cheerio from "cheerio";
 import { installModern } from './src/local-modern.js';
-import { publicOrigin } from './src/public-url.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const app = express();
@@ -52,25 +51,9 @@ async function sendRequestEmail({ name, email, website, useCase }) {
 app.use((req, res, next) => {
     res.setHeader("Access-Control-Allow-Origin", "*");
     res.setHeader("Access-Control-Allow-Methods", "GET, HEAD, POST, PUT, DELETE, OPTIONS");
-    res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization, X-API-Key, apikey, api-key, Range, If-Range");
-    res.setHeader("Access-Control-Expose-Headers", "Content-Length, Content-Range, Accept-Ranges, Content-Disposition");
+    res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization, Range");
+    res.setHeader("Access-Control-Expose-Headers", "Content-Length, Content-Range");
     if (req.method === "OPTIONS") return res.sendStatus(204);
-    next();
-});
-
-// When configured, Railway accepts public traffic only from the Cloudflare
-// Worker. Keep the Railway health endpoint available to Railway's healthcheck.
-const edgeSecret = process.env.EDGE_SHARED_SECRET || '';
-function safeSecretEqual(a, b) {
-    if (!a || !b) return false;
-    const x = Buffer.from(String(a)), y = Buffer.from(String(b));
-    return x.length === y.length && crypto.timingSafeEqual(x, y);
-}
-app.use((req, res, next) => {
-    if (!edgeSecret || req.path === '/api/v3/health') return next();
-    if (!safeSecretEqual(req.headers['x-edge-secret'], edgeSecret)) {
-        return res.status(403).json({ status: 403, success: false, creator: 'Zahid dev', code: 'EDGE_ONLY', message: 'Use the official API domain.' });
-    }
     next();
 });
 
@@ -1495,7 +1478,7 @@ app.get("/api/v3/anime/sources/:id", async (req, res) => {
         const videoList = resourceData?.list || [];
         if (videoList.length === 0) return err(res, "No video sources found for this anime title", 404);
 
-        const baseUrl = publicOrigin(req);
+        const baseUrl = `${req.headers['x-forwarded-proto']?.split(',')[0] || req.protocol}://${req.get('host')}`;
 
         const rawSources = videoList.map(f => {
             const label = normaliseQualityLabel(f.resolution);
@@ -1591,7 +1574,7 @@ app.get("/api/v3/sources/:id", async (req, res) => {
         const videoList = v3ResourceData?.list || [];
 
         if (videoList.length > 0) {
-            const baseUrl = publicOrigin(req);
+            const baseUrl = `${req.headers['x-forwarded-proto']?.split(',')[0] || req.protocol}://${req.get('host')}`;
 
             const rawSources = videoList.map(f => {
                 const label = normaliseQualityLabel(f.resolution);
