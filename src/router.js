@@ -337,7 +337,9 @@ async function sourceResponse(data,key,url,env,p) {
         const downloadable=['mp4','webm','ts'].includes(format);
         entries.push({token,expires,data:{url:raw,headers,title:data.title,filename}});
         return {...s,format:s.format||format,url:links.streamUrl,streamUrl:links.streamUrl,
-            ...(env.DIRECT_CDN_URLS==='true'?{directUrl:raw}:{}),
+            // Keep the signed provider URL available as a last-resort browser
+            // path when a hosting provider's outbound IP is rate-limited.
+            directUrl:raw,
             downloadUrl:downloadable?links.downloadUrl:null,
             filename,expiresAt:new Date(expires).toISOString()};
     });

@@ -44,12 +44,6 @@ If `streamUrl` still points to `movieapi-production-...up.railway.app`, Railway 
 
 Cloudflare media is opt-in because some CDN edges reject Worker fetches with HTTP 427 and a missing Worker secret must not break the Railway relay. Set `EDGE_MEDIA_ENABLED=true` only after the Worker `/health` endpoint and a fresh `/media/<token>` request both work. With the default `false`, sources use the Railway `/api/v3/stream` and `/api/v3/download` relay paths.
 
-## Optional direct-CDN fallback
+## Direct-CDN fallback
 
-Some CDN edges reject Cloudflare's standard Worker `fetch()` TLS fingerprint with HTTP 427 even when browser headers are copied. If that happens, set this Railway variable:
-
-```text
-DIRECT_CDN_URLS=true
-```
-
-Fresh source responses then include `directUrl` for each source. These are signed, expiring CDN URLs intended for a real browser or bot HTTP client. They bypass both Railway and the Worker, but expose the signed URL to the client and may require the source's browser headers. Keep this disabled if raw CDN URLs must remain private.
+Some CDN edges reject Cloudflare's standard Worker `fetch()` TLS fingerprint with HTTP 427 or rate-limit Railway's outbound IP with HTTP 429. Fresh source responses therefore include `directUrl` for each source. These are signed, expiring CDN URLs intended for a real browser or bot HTTP client. They bypass both Railway and the Worker, but expose the signed URL to the client and may require the source's browser headers.
