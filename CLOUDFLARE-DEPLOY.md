@@ -41,3 +41,13 @@ Do not put `ADMIN_SECRET` in Cloudflare. The Worker only needs `EDGE_SHARED_SECR
 6. For downloads, use the returned `downloadUrl`; it adds `?download=1` and streams with `Content-Disposition: attachment`.
 
 If `streamUrl` still points to `movieapi-production-...up.railway.app`, Railway is missing either `PUBLIC_BASE_URL` or `EDGE_SHARED_SECRET`. If the Worker returns `EDGE_CONFIG_INVALID`, update `ORIGIN_URL` in `wrangler.toml`. If it returns `PLAYBACK_EXPIRED`, request fresh sources.
+
+## Optional direct-CDN fallback
+
+Some CDN edges reject Cloudflare's standard Worker `fetch()` TLS fingerprint with HTTP 427 even when browser headers are copied. If that happens, set this Railway variable:
+
+```text
+DIRECT_CDN_URLS=true
+```
+
+Fresh source responses then include `directUrl` for each source. These are signed, expiring CDN URLs intended for a real browser or bot HTTP client. They bypass both Railway and the Worker, but expose the signed URL to the client and may require the source's browser headers. Keep this disabled if raw CDN URLs must remain private.
