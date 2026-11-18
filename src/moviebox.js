@@ -4,7 +4,8 @@ import * as cheerio from 'cheerio';
 // Protocol adapted from walterwhite-69/Moviebox-API (MIT); see UPSTREAM-LICENSE.txt.
 const SECRET = Buffer.from('76iRl07s0xSN9jqmEWAt79EBJZulIQIsV64FZr2O','base64');
 const UA = 'com.community.mbox.in/50020130 (Linux; U; Android 14; en_IN; Pixel 8; Build/UD1A.230803.041; Cronet/145.0.7582.0)';
-const WEB_UA = 'Mozilla/5.0 (Linux; Android 15; Pixel 9) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Mobile Safari/537.36';
+const WEB_UA = 'Mozilla/5.0 (Linux; Android 15; Pixel 9) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Mobile Safari/537.36';
+const MEDIA_ORIGIN = 'https://moviebox.ph';
 const HOSTS = ['https://api3.aoneroom.com','https://apig.inmoviebox.com','https://api6.aoneroom.com'];
 const WEB = ['https://movieboxhd.net','https://123moviesfree.club','https://netnaija.film','https://h5-api.aoneroom.com','https://sflix.film'];
 export class UpstreamError extends Error {
@@ -168,7 +169,7 @@ export class MovieBox {
                 size:s.size||null,duration:s.duration||null,codec:s.codecName||null,
                 browserCompatible:!/(hevc|h265|hvc1|hev1)/i.test(s.codecName||''),
                 requireMemberType:s.requireMemberType??0,
-                headers:mediaHeaders(s,{'User-Agent':host.includes('api3.')?UA:WEB_UA,Referer:host+'/',Origin:host})});
+                headers:mediaHeaders(s,{'User-Agent':host.includes('api3.')?UA:WEB_UA,Referer:MEDIA_ORIGIN+'/',Origin:MEDIA_ORIGIN})});
         };
         for (const host of WEB) {
             const qs=new URLSearchParams({subjectId:id,se:String(se),ep:String(ep),detailPath,streamSignType:'1','supportCodecs[hevc]':'1','supportCodecs[h264]':'1'});
