@@ -42,6 +42,8 @@ Do not put `ADMIN_SECRET` in Cloudflare. The Worker only needs `EDGE_SHARED_SECR
 
 If `streamUrl` still points to `movieapi-production-...up.railway.app`, Railway is missing either `PUBLIC_BASE_URL` or `EDGE_SHARED_SECRET`. If the Worker returns `EDGE_CONFIG_INVALID`, update `ORIGIN_URL` in `wrangler.toml`. If it returns `PLAYBACK_EXPIRED`, request fresh sources.
 
+Cloudflare media is opt-in because some CDN edges reject Worker fetches with HTTP 427 and a missing Worker secret must not break the Railway relay. Set `EDGE_MEDIA_ENABLED=true` only after the Worker `/health` endpoint and a fresh `/media/<token>` request both work. With the default `false`, sources use the Railway `/api/v3/stream` and `/api/v3/download` relay paths.
+
 ## Optional direct-CDN fallback
 
 Some CDN edges reject Cloudflare's standard Worker `fetch()` TLS fingerprint with HTTP 427 even when browser headers are copied. If that happens, set this Railway variable:
