@@ -2,6 +2,7 @@
 from concurrent.futures import ThreadPoolExecutor, TimeoutError as FutureTimeout
 from queue import Queue, Full, Empty
 import threading
+import time
 
 from curl_cffi import Curl, CurlHttpVersion, CurlOpt
 import httpx
@@ -68,7 +69,7 @@ class CurlStreamResponse:
             # negotiation lands on an edge that wants the other HTTP version;
             # those statuses are transport negotiation failures, not final media
             # decisions. Do not retry ordinary upstream responses such as 403.
-            versions = (CurlHttpVersion.V2_0, CurlHttpVersion.V1_1)
+                versions = (CurlHttpVersion.V2_0, CurlHttpVersion.V1_1, CurlHttpVersion.V2_0)
             try:
                 for attempt, version in enumerate(versions):
                     if attempt:
@@ -90,8 +91,10 @@ class CurlStreamResponse:
                         if method == "HEAD":
                             curl.setopt(CurlOpt.NOBODY, 1)
                         curl.perform()
-                        if self.status_code in {421, 425, 426} and attempt < len(versions) - 1:
+                        if self.status_code in {421, 425, 426, 429} and attempt < len(versions) - 1:
                             self.error = RuntimeError(f"Retrying media request after HTTP {self.status_code}")
+                            if self.status_code == 429:
+                                time.sleep(0.25)
                             continue
                         if self.status_code:
                             self.error = None
