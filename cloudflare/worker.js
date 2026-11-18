@@ -120,6 +120,12 @@ export default {
       'Access-Control-Allow-Methods': 'GET,HEAD,OPTIONS',
     }});
     const incoming = new URL(request.url);
+    if (incoming.pathname === '/' || incoming.pathname === '/health') {
+      return new Response(JSON.stringify({ok: true, service: 'zahid-movieapi-edge', mediaPath: '/media/<24-character-token>'}), {
+        status: 200,
+        headers: {'content-type': 'application/json; charset=utf-8', 'cache-control': 'no-store', 'access-control-allow-origin': '*'},
+      });
+    }
     const match = incoming.pathname.match(/^\/media\/([A-Za-z0-9_-]{24})$/);
     if (!match) return json('Endpoint not found', 404, 'NOT_FOUND');
     if (!['GET', 'HEAD'].includes(request.method)) return json('Use GET or HEAD', 405, 'METHOD_NOT_ALLOWED');
